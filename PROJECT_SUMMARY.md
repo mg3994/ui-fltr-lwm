@@ -68,7 +68,8 @@ lib/
 │   │
 │   ├── tools/
 │   │   ├── resume_builder_screen.dart  # Multi-step resume wizard
-│   │   └── portfolio_builder_screen.dart # Project showcase builder
+│   │   ├── portfolio_builder_screen.dart # Project showcase builder
+│   │   └── goals_screen.dart           # Learning goals tracker
 │   │
 │   └── notifications/
 │       └── notifications_screen.dart   # Push notifications list
@@ -163,6 +164,27 @@ lib/
 - **Settings**: Notifications, dark mode, email preferences
 - **Help & Support**: FAQ, email support, live chat
 - **Notifications**: Session confirmations, messages, payments
+
+### 🔍 Advanced Features (NEW)
+1. **Global Search**
+   - Search across mentors, sessions, questions, and resources
+   - Filter by type (All, Mentors, Sessions, Questions, Resources)
+   - Real-time search results
+   - Type-specific result cards
+
+2. **Goals Tracking**
+   - Set and track learning goals
+   - Visual progress indicators
+   - Category-based organization
+   - Add custom goals
+   - Delete completed goals
+
+3. **Analytics Dashboard** (Mentor-only)
+   - Key metrics (Sessions, Earnings, Rating, Response Time)
+   - Session activity bar chart
+   - Most requested skills breakdown
+   - Recent reviews display
+   - Period selection (Week/Month/Year)
 
 ## State Management
 
@@ -283,7 +305,25 @@ flutter build ios
 ## Git Repository
 - **URL**: https://github.com/mg3994/ui-fltr-lwm.git
 - **Branch**: main
-- **Last Commit**: "first commit"
+- **Latest Commit**: "feat: Add Search, Goals, and Analytics features"
+
+## Recent Updates (Latest)
+
+### Version 1.1.0 - Advanced Features
+✅ **New Features**:
+- Global Search with multi-type filtering
+- Goals tracking system with progress visualization
+- Analytics dashboard for mentors
+- Comprehensive PROJECT_SUMMARY.md
+
+✅ **Bug Fixes**:
+- Fixed `session.date` to `session.dateTime` property error
+- Removed unused imports
+
+✅ **Improvements**:
+- Enhanced Profile menu with new tools
+- Conditional Analytics menu (mentor-only)
+- Better code organization
 
 ## Development Notes
 
