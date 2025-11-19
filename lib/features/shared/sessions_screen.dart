@@ -78,7 +78,7 @@ class SessionCard extends StatelessWidget {
               builder: (_) => SessionDetailsScreen(
                 mentorName: session.mentor.name,
                 topic: session.topic,
-                time: DateFormat('MMM d, y • h:mm a').format(session.date),
+                time: DateFormat('MMM d, y • h:mm a').format(session.dateTime),
                 image: session.mentor.imageUrl,
                 isPast: !isUpcoming,
               ),
@@ -148,7 +148,7 @@ class SessionCard extends StatelessWidget {
                   ),
                   const Gap(8),
                   Text(
-                    dateFormat.format(session.date),
+                    dateFormat.format(session.dateTime),
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
