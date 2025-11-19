@@ -11,6 +11,8 @@ import 'package:linkwithmentor/features/mentor/dashboard/payouts_screen.dart';
 import 'package:linkwithmentor/features/shared/profile/edit_profile_screen.dart';
 import 'package:linkwithmentor/features/shared/profile/help_support_screen.dart';
 import 'package:linkwithmentor/features/shared/profile/settings_screen.dart';
+import 'package:linkwithmentor/features/tools/goals_screen.dart';
+import 'package:linkwithmentor/features/mentor/analytics/analytics_screen.dart';
 
 class ProfileScreen extends HookWidget {
   const ProfileScreen({super.key});
@@ -208,6 +210,29 @@ class ProfileScreen extends HookWidget {
               );
             },
           ),
+          _ProfileMenuItem(
+            icon: Icons.flag_outlined,
+            title: 'My Goals',
+            subtitle: 'Track your learning progress',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const GoalsScreen()),
+              );
+            },
+          ),
+          if (isMentor)
+            _ProfileMenuItem(
+              icon: Icons.analytics_outlined,
+              title: 'Analytics',
+              subtitle: 'View your performance metrics',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
+                );
+              },
+            ),
           _ProfileMenuItem(
             icon: Icons.help_outline,
             title: 'Help & Support',
