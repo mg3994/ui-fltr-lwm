@@ -63,52 +63,90 @@ class StudyGroupsScreen extends HookWidget {
     final groups = selectedTab.value == 0 ? myGroups : discoverGroups;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Study Groups')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        icon: const Icon(Icons.add),
-        label: const Text('Create Group'),
-      ),
-      body: Column(
-        children: [
-          // Tab Selector
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(
-                  value: 0,
-                  label: Text('My Groups'),
-                  icon: Icon(Icons.group),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Study Groups',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
-                ButtonSegment(
-                  value: 1,
-                  label: Text('Discover'),
-                  icon: Icon(Icons.explore),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
-              ],
-              selected: {selectedTab.value},
-              onSelectionChanged: (newSelection) {
-                selectedTab.value = newSelection.first;
-              },
+              ),
             ),
           ),
-
-          // Groups List
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: groups.length,
-              itemBuilder: (context, index) {
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(
+                    value: 0,
+                    label: Text('My Groups'),
+                    icon: Icon(Icons.group),
+                  ),
+                  ButtonSegment(
+                    value: 1,
+                    label: Text('Discover'),
+                    icon: Icon(Icons.explore),
+                  ),
+                ],
+                selected: {selectedTab.value},
+                onSelectionChanged: (newSelection) {
+                  selectedTab.value = newSelection.first;
+                },
+                style: ButtonStyle(
+                  side: WidgetStateProperty.all(
+                    BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
                 final group = groups[index];
                 return _GroupCard(
                   group: group,
                   isJoined: group['joined'] as bool,
                 );
-              },
+              }, childCount: groups.length),
             ),
           ),
+          const SliverGap(80),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text('Create Group'),
+        elevation: 2,
       ),
     );
   }
@@ -122,8 +160,24 @@ class _GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,6 +214,13 @@ class _GroupCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -168,7 +229,11 @@ class _GroupCard extends StatelessWidget {
                         Gap(4),
                         Text(
                           'Joined',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -195,6 +260,7 @@ class _GroupCard extends StatelessWidget {
                   group['description'] as String,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.4,
                   ),
                 ),
                 const Gap(12),
@@ -236,11 +302,22 @@ class _GroupCard extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.chat),
                           label: const Text('Open Chat'),
+                          style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
                         ),
                       ),
                       const Gap(12),
                       OutlinedButton(
                         onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         child: const Text('Leave'),
                       ),
                     ],
@@ -252,6 +329,10 @@ class _GroupCard extends StatelessWidget {
                     label: const Text('Join Group'),
                     style: FilledButton.styleFrom(
                       minimumSize: const Size(double.infinity, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
                     ),
                   ),
               ],

@@ -58,160 +58,263 @@ class StreaksScreen extends HookWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Activity Streaks')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Current Streak Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  const Icon(
-                    Icons.local_fire_department,
-                    size: 64,
-                    color: Colors.orange,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Activity Streaks',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.orange.withValues(alpha: 0.15),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  const Gap(16),
-                  Text(
-                    '$currentStreak',
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Current Streak Card
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.surface,
+                        Colors.orange.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withValues(alpha: 0.15),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                     ),
                   ),
-                  const Text('Day Streak', style: TextStyle(fontSize: 18)),
-                  const Gap(24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
                     children: [
-                      _StatColumn(
-                        label: 'Longest',
-                        value: '$longestStreak',
-                        icon: Icons.trending_up,
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        duration: const Duration(milliseconds: 800),
+                        curve: Curves.elasticOut,
+                        builder: (context, value, child) {
+                          return Transform.scale(scale: value, child: child);
+                        },
+                        child: const Icon(
+                          Icons.local_fire_department,
+                          size: 64,
+                          color: Colors.orange,
+                        ),
                       ),
-                      _StatColumn(
-                        label: 'Total Days',
-                        value: '$totalDays',
-                        icon: Icons.calendar_today,
+                      const Gap(16),
+                      Text(
+                        '$currentStreak',
+                        style: const TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      const Text('Day Streak', style: TextStyle(fontSize: 18)),
+                      const Gap(24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _StatColumn(
+                            label: 'Longest',
+                            value: '$longestStreak',
+                            icon: Icons.trending_up,
+                          ),
+                          Container(
+                            height: 40,
+                            width: 1,
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          _StatColumn(
+                            label: 'Total Days',
+                            value: '$totalDays',
+                            icon: Icons.calendar_today,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-
-          const Gap(24),
-
-          // Calendar View
-          const Text(
-            'Last 30 Days',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Gap(16),
-
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 7,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
                 ),
-                itemCount: streakHistory.length,
-                itemBuilder: (context, index) {
-                  final day = streakHistory[index];
-                  final isActive = day['active'] as bool;
-                  final date = day['day'] as DateTime;
 
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? Colors.orange.withValues(alpha: 0.8)
-                          : Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(8),
+                const Gap(24),
+
+                // Calendar View
+                const Text(
+                  'Last 30 Days',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const Gap(16),
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                     ),
-                    child: Center(
-                      child: Text(
-                        '${date.day}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isActive
-                              ? Colors.white
-                              : Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).shadowColor.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                        ),
+                    itemCount: streakHistory.length,
+                    itemBuilder: (context, index) {
+                      final day = streakHistory[index];
+                      final isActive = day['active'] as bool;
+                      final date = day['day'] as DateTime;
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? Colors.orange.withValues(alpha: 0.8)
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: isActive
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.orange.withValues(alpha: 0.3),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${date.day}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: isActive
+                                  ? Colors.white
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const Gap(24),
+
+                // Milestones
+                const Text(
+                  'Streak Milestones',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const Gap(16),
+
+                ...milestones.map(
+                  (milestone) => _MilestoneCard(milestone: milestone),
+                ),
+
+                const Gap(24),
+
+                // Tips Card
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.2),
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-
-          const Gap(24),
-
-          // Milestones
-          const Text(
-            'Streak Milestones',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Gap(16),
-
-          ...milestones.map(
-            (milestone) => _MilestoneCard(milestone: milestone),
-          ),
-
-          const Gap(24),
-
-          // Tips Card
-          Card(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.lightbulb,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.lightbulb,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const Gap(12),
+                          Text(
+                            'Keep Your Streak Alive!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
                       ),
                       const Gap(12),
                       Text(
-                        'Keep Your Streak Alive!',
+                        '• Complete at least one session per day\n'
+                        '• Answer community questions\n'
+                        '• Practice interview questions\n'
+                        '• Update your learning goals',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onPrimaryContainer,
+                          fontSize: 13,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          height: 1.5,
                         ),
                       ),
                     ],
                   ),
-                  const Gap(12),
-                  Text(
-                    '• Complete at least one session per day\n'
-                    '• Answer community questions\n'
-                    '• Practice interview questions\n'
-                    '• Update your learning goals',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const Gap(80),
+              ]),
             ),
           ),
         ],
@@ -262,8 +365,26 @@ class _MilestoneCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final achieved = milestone['achieved'] as bool;
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: achieved
+              ? (milestone['color'] as Color).withValues(alpha: 0.3)
+              : Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -272,7 +393,7 @@ class _MilestoneCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: achieved
-                    ? (milestone['color'] as Color).withValues(alpha: 0.2)
+                    ? (milestone['color'] as Color).withValues(alpha: 0.15)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),

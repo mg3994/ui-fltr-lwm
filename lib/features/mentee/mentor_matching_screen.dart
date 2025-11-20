@@ -28,28 +28,115 @@ class MentorMatchingScreen extends HookWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Find Your Perfect Mentor')),
-      body: Column(
-        children: [
-          // Progress Indicator
-          LinearProgressIndicator(
-            value: (currentStep.value + 1) / 4,
-            backgroundColor: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 140,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Find Your Perfect Mentor',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
           ),
-
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(24),
+          SliverToBoxAdapter(
+            child: Column(
               children: [
-                if (currentStep.value == 0) ...[
+                // Progress Indicator with Steps
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: List.generate(4, (index) {
+                      final isActive = index <= currentStep.value;
+                      return Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: isActive
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            ),
+                            if (index < 3) const Gap(4),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                // Step Indicator
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Step ${currentStep.value + 1} of 4',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '${((currentStep.value + 1) / 4 * 100).toInt()}% Complete',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(24),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                if (currentStep.value == 0) ...{
                   const Text(
                     'What are your goals?',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const Gap(8),
-                  const Text('Select all that apply'),
+                  Text(
+                    'Select all that apply',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const Gap(24),
                   Wrap(
                     spacing: 8,
@@ -71,16 +158,42 @@ class MentorMatchingScreen extends HookWidget {
                                 .toList();
                           }
                         },
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        selectedColor: Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer,
+                        labelStyle: TextStyle(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : Theme.of(context).colorScheme.onSurface,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        side: BorderSide(
+                          color: isSelected
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outlineVariant
+                                    .withValues(alpha: 0.5),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       );
                     }).toList(),
                   ),
-                ] else if (currentStep.value == 1) ...[
+                } else if (currentStep.value == 1) ...{
                   const Text(
                     'What skills do you want to learn?',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const Gap(8),
-                  const Text('Choose your focus areas'),
+                  Text(
+                    'Choose your focus areas',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const Gap(24),
                   Wrap(
                     spacing: 8,
@@ -102,47 +215,104 @@ class MentorMatchingScreen extends HookWidget {
                                 .toList();
                           }
                         },
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        selectedColor: Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer,
+                        labelStyle: TextStyle(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : Theme.of(context).colorScheme.onSurface,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        side: BorderSide(
+                          color: isSelected
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outlineVariant
+                                    .withValues(alpha: 0.5),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       );
                     }).toList(),
                   ),
-                ] else if (currentStep.value == 2) ...[
+                } else if (currentStep.value == 2) ...{
                   const Text(
                     'When are you available?',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const Gap(8),
-                  const Text('Select your preferred time slots'),
+                  Text(
+                    'Select your preferred time slots',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const Gap(24),
                   ...availability.map((time) {
                     final isSelected = selectedAvailability.value.contains(
                       time,
                     );
-                    return CheckboxListTile(
-                      title: Text(time),
-                      value: isSelected,
-                      onChanged: (selected) {
-                        if (selected == true) {
-                          selectedAvailability.value = [
-                            ...selectedAvailability.value,
-                            time,
-                          ];
-                        } else {
-                          selectedAvailability.value = selectedAvailability
-                              .value
-                              .where((t) => t != time)
-                              .toList();
-                        }
-                      },
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primaryContainer
+                                  .withValues(alpha: 0.3)
+                            : Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isSelected
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.5)
+                              : Theme.of(context).colorScheme.outlineVariant
+                                    .withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: CheckboxListTile(
+                        title: Text(
+                          time,
+                          style: TextStyle(
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        value: isSelected,
+                        onChanged: (selected) {
+                          if (selected == true) {
+                            selectedAvailability.value = [
+                              ...selectedAvailability.value,
+                              time,
+                            ];
+                          } else {
+                            selectedAvailability.value = selectedAvailability
+                                .value
+                                .where((t) => t != time)
+                                .toList();
+                          }
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     );
                   }),
-                ] else ...[
+                } else ...{
                   const Text(
                     'Your Perfect Matches',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const Gap(8),
-                  const Text(
+                  Text(
                     'Based on your preferences, we found these mentors for you',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const Gap(24),
                   _MatchCard(
@@ -150,7 +320,7 @@ class MentorMatchingScreen extends HookWidget {
                     title: 'Senior Flutter Developer',
                     avatar: 'https://i.pravatar.cc/150?u=1',
                     matchScore: 95,
-                    skills: ['Flutter', 'Dart', 'Firebase'],
+                    skills: const ['Flutter', 'Dart', 'Firebase'],
                     rating: 4.9,
                   ),
                   _MatchCard(
@@ -158,7 +328,7 @@ class MentorMatchingScreen extends HookWidget {
                     title: 'Product Designer',
                     avatar: 'https://i.pravatar.cc/150?u=2',
                     matchScore: 88,
-                    skills: ['UI/UX', 'Figma', 'Prototyping'],
+                    skills: const ['UI/UX', 'Figma', 'Prototyping'],
                     rating: 4.8,
                   ),
                   _MatchCard(
@@ -166,44 +336,68 @@ class MentorMatchingScreen extends HookWidget {
                     title: 'Mobile Architect',
                     avatar: 'https://i.pravatar.cc/150?u=4',
                     matchScore: 92,
-                    skills: ['iOS', 'Android', 'System Design'],
+                    skills: const ['iOS', 'Android', 'System Design'],
                     rating: 5.0,
                   ),
-                ],
-              ],
+                },
+              ]),
             ),
           ),
-
-          // Navigation Buttons
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                if (currentStep.value > 0)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => currentStep.value--,
-                      child: const Text('Back'),
-                    ),
-                  ),
-                if (currentStep.value > 0) const Gap(16),
+          const SliverGap(80),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Row(
+            children: [
+              if (currentStep.value > 0)
                 Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      if (currentStep.value < 3) {
-                        currentStep.value++;
-                      } else {
-                        // Complete matching
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text(currentStep.value == 3 ? 'Done' : 'Next'),
+                  child: OutlinedButton(
+                    onPressed: () => currentStep.value--,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Back'),
                   ),
                 ),
-              ],
-            ),
+              if (currentStep.value > 0) const Gap(16),
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    if (currentStep.value < 3) {
+                      currentStep.value++;
+                    } else {
+                      // Complete matching
+                      Navigator.pop(context);
+                    }
+                  },
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(0, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(currentStep.value == 3 ? 'Done' : 'Next'),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -228,8 +422,24 @@ class _MatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -239,19 +449,43 @@ class _MatchCard extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    CircleAvatar(
-                      radius: 32,
-                      backgroundImage: NetworkImage(avatar),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.3),
+                          width: 3,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 32,
+                        backgroundImage: NetworkImage(avatar),
+                      ),
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.surface,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           '$matchScore%',
@@ -278,13 +512,21 @@ class _MatchCard extends StatelessWidget {
                         ),
                       ),
                       const Gap(4),
-                      Text(title),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                       const Gap(4),
                       Row(
                         children: [
                           const Icon(Icons.star, size: 16, color: Colors.amber),
                           const Gap(4),
-                          Text('$rating'),
+                          Text(
+                            '$rating',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ],
@@ -311,6 +553,7 @@ class _MatchCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 );
@@ -323,6 +566,10 @@ class _MatchCard extends StatelessWidget {
               label: const Text('Connect'),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
               ),
             ),
           ],

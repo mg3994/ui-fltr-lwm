@@ -65,94 +65,176 @@ class MentorReviewsScreen extends HookWidget {
     final ratingDistribution = {5: 85, 4: 12, 3: 2, 2: 1, 1: 0};
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Reviews')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Overall Rating Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  Text(
-                    averageRating.toStringAsFixed(1),
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                    ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Reviews',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  const Gap(8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return Icon(
-                        index < averageRating.floor()
-                            ? Icons.star
-                            : index < averageRating
-                            ? Icons.star_half
-                            : Icons.star_border,
-                        color: Colors.amber,
-                        size: 28,
-                      );
-                    }),
-                  ),
-                  const Gap(8),
-                  Text(
-                    'Based on ${reviews.length} reviews',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const Gap(24),
-
-                  // Rating Distribution
-                  ...ratingDistribution.entries.map((entry) {
-                    final stars = entry.key;
-                    final percentage = entry.value;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Text('$stars'),
-                          const Gap(4),
-                          const Icon(Icons.star, size: 16, color: Colors.amber),
-                          const Gap(12),
-                          Expanded(
-                            child: LinearProgressIndicator(
-                              value: percentage / 100,
-                              minHeight: 8,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          const Gap(12),
-                          SizedBox(
-                            width: 40,
-                            child: Text(
-                              '$percentage%',
-                              textAlign: TextAlign.end,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ],
+                ),
               ),
             ),
           ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Overall Rating Card
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).shadowColor.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          averageRating.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const Gap(8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(5, (index) {
+                            return Icon(
+                              index < averageRating.floor()
+                                  ? Icons.star
+                                  : index < averageRating
+                                  ? Icons.star_half
+                                  : Icons.star_border,
+                              color: Colors.amber,
+                              size: 28,
+                            );
+                          }),
+                        ),
+                        const Gap(8),
+                        Text(
+                          'Based on ${reviews.length} reviews',
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const Gap(24),
 
-          const Gap(24),
+                        // Rating Distribution
+                        ...ratingDistribution.entries.map((entry) {
+                          final stars = entry.key;
+                          final percentage = entry.value;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                  child: Text(
+                                    '$stars',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const Gap(4),
+                                const Icon(
+                                  Icons.star,
+                                  size: 16,
+                                  color: Colors.amber,
+                                ),
+                                const Gap(12),
+                                Expanded(
+                                  child: LinearProgressIndicator(
+                                    value: percentage / 100,
+                                    minHeight: 8,
+                                    borderRadius: BorderRadius.circular(4),
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHighest,
+                                  ),
+                                ),
+                                const Gap(12),
+                                SizedBox(
+                                  width: 40,
+                                  child: Text(
+                                    '$percentage%',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
 
-          // Reviews List
-          const Text(
-            'All Reviews',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                const Gap(24),
+
+                // Reviews List Header
+                Text(
+                  'All Reviews',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const Gap(16),
+
+                ...reviews.map((review) => _ReviewCard(review: review)),
+              ]),
+            ),
           ),
-          const Gap(16),
-
-          ...reviews.map((review) => _ReviewCard(review: review)),
+          const SliverGap(80),
         ],
       ),
     );
@@ -166,8 +248,24 @@ class _ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -177,6 +275,7 @@ class _ReviewCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundImage: NetworkImage(review['avatar'] as String),
+                  radius: 20,
                 ),
                 const Gap(12),
                 Expanded(
@@ -198,33 +297,64 @@ class _ReviewCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
-                  children: List.generate(5, (index) {
-                    return Icon(
-                      index < (review['rating'] as double).floor()
-                          ? Icons.star
-                          : Icons.star_border,
-                      color: Colors.amber,
-                      size: 18,
-                    );
-                  }),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 16),
+                      const Gap(4),
+                      Text(
+                        '${review['rating']}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             const Gap(12),
-            Text(review['comment'] as String),
+            Text(
+              review['comment'] as String,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                height: 1.5,
+              ),
+            ),
             const Gap(12),
             Row(
               children: [
-                TextButton.icon(
+                OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.thumb_up_outlined, size: 18),
                   label: Text('Helpful (${review['helpful']})'),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
                 ),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.flag_outlined, size: 18),
                   onPressed: () {},
+                  style: IconButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               ],
             ),

@@ -67,9 +67,115 @@ class ForumScreen extends HookWidget {
         : questions.where((q) => q['tag'] == selectedTag.value).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Community Q&A'),
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Community Q&A',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+                style: IconButton.styleFrom(
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.5),
+                ),
+              ),
+              const Gap(8),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children:
+                    [
+                      'All',
+                      'Flutter',
+                      'Career',
+                      'Interview',
+                      'Resume',
+                      'Dart',
+                    ].map((tag) {
+                      final isSelected = selectedTag.value == tag;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(tag),
+                          selected: isSelected,
+                          onSelected: (selected) => selectedTag.value = tag,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surface,
+                          selectedColor: Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer,
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimaryContainer
+                                : Theme.of(context).colorScheme.onSurface,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                          side: BorderSide(
+                            color: isSelected
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outlineVariant
+                                      .withValues(alpha: 0.5),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _QuestionCard(question: filteredQuestions[index]),
+                );
+              }, childCount: filteredQuestions.length),
+            ),
+          ),
+          const SliverGap(80),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -80,47 +186,7 @@ class ForumScreen extends HookWidget {
         },
         label: const Text('Ask Question'),
         icon: const Icon(Icons.add_comment),
-      ),
-      body: Column(
-        children: [
-          // Tags Filter
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children:
-                  [
-                    'All',
-                    'Flutter',
-                    'Career',
-                    'Interview',
-                    'Resume',
-                    'Dart',
-                  ].map((tag) {
-                    final isSelected = selectedTag.value == tag;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: Text(tag),
-                        selected: isSelected,
-                        onSelected: (selected) => selectedTag.value = tag,
-                      ),
-                    );
-                  }).toList(),
-            ),
-          ),
-
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: filteredQuestions.length,
-              separatorBuilder: (context, index) => const Gap(16),
-              itemBuilder: (context, index) {
-                return _QuestionCard(question: filteredQuestions[index]);
-              },
-            ),
-          ),
-        ],
+        elevation: 2,
       ),
     );
   }
@@ -133,11 +199,22 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: InkWell(
         onTap: () {
@@ -172,11 +249,11 @@ class _QuestionCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
-                      vertical: 2,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondaryContainer,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       question['tag']!,
@@ -206,6 +283,7 @@ class _QuestionCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.4,
                 ),
               ),
               const Gap(16),
@@ -261,21 +339,29 @@ class _InteractionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(4),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Colors.grey),
-          if (count.isNotEmpty) ...[
-            const Gap(4),
-            Text(
-              count,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-              ),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
+            if (count.isNotEmpty) ...[
+              const Gap(4),
+              Text(
+                count,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

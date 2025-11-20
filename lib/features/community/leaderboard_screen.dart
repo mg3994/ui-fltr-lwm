@@ -58,60 +58,96 @@ class LeaderboardScreen extends HookWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Leaderboard')),
-      body: Column(
-        children: [
-          // Tab Selector
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(
-                  value: 0,
-                  label: Text('Top Mentors'),
-                  icon: Icon(Icons.school),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Leaderboard',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
-                ButtonSegment(
-                  value: 1,
-                  label: Text('Top Learners'),
-                  icon: Icon(Icons.emoji_events),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
-              ],
-              selected: {selectedTab.value},
-              onSelectionChanged: (newSelection) {
-                selectedTab.value = newSelection.first;
-              },
-            ),
-          ),
-
-          // Top 3 Podium
-          if (topMentors.length >= 3)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _PodiumCard(user: topMentors[1], height: 120),
-                  _PodiumCard(user: topMentors[0], height: 150),
-                  _PodiumCard(user: topMentors[2], height: 100),
-                ],
               ),
             ),
-
-          const Gap(16),
-
-          // Leaderboard List
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: topMentors.length,
-              itemBuilder: (context, index) {
-                final user = topMentors[index];
-                return _LeaderboardCard(user: user);
-              },
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(
+                    value: 0,
+                    label: Text('Top Mentors'),
+                    icon: Icon(Icons.school),
+                  ),
+                  ButtonSegment(
+                    value: 1,
+                    label: Text('Top Learners'),
+                    icon: Icon(Icons.emoji_events),
+                  ),
+                ],
+                selected: {selectedTab.value},
+                onSelectionChanged: (newSelection) {
+                  selectedTab.value = newSelection.first;
+                },
+                style: ButtonStyle(
+                  side: WidgetStateProperty.all(
+                    BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
+          if (topMentors.length >= 3)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _PodiumCard(user: topMentors[1], height: 120),
+                    _PodiumCard(user: topMentors[0], height: 150),
+                    _PodiumCard(user: topMentors[2], height: 100),
+                  ],
+                ),
+              ),
+            ),
+          const SliverGap(16),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final user = topMentors[index];
+                return _LeaderboardCard(user: user);
+              }, childCount: topMentors.length),
+            ),
+          ),
+          const SliverGap(80),
         ],
       ),
     );
@@ -131,9 +167,20 @@ class _PodiumCard extends StatelessWidget {
         Stack(
           alignment: Alignment.topCenter,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(user['avatar'] as String),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.3),
+                  width: 3,
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(user['avatar'] as String),
+              ),
             ),
             if ((user['badge'] as String).isNotEmpty)
               Positioned(
@@ -170,10 +217,21 @@ class _PodiumCard extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withValues(alpha: 0.5),
               ],
             ),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Center(
             child: Text(
@@ -201,12 +259,32 @@ class _LeaderboardCard extends StatelessWidget {
     final rank = user['rank'] as int;
     final isTopThree = rank <= 3;
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      color: isTopThree
-          ? Theme.of(context).colorScheme.surfaceContainerHighest
-          : null,
+      decoration: BoxDecoration(
+        color: isTopThree
+            ? Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+            : Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isTopThree
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+              : Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -224,6 +302,7 @@ class _LeaderboardCard extends StatelessWidget {
                   '#$rank',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 12,
                     color: isTopThree
                         ? Theme.of(context).colorScheme.onPrimary
                         : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -237,14 +316,21 @@ class _LeaderboardCard extends StatelessWidget {
             ),
           ],
         ),
-        title: Text(user['name'] as String),
+        title: Text(
+          user['name'] as String,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         subtitle: Row(
           children: [
             const Icon(Icons.star, size: 14, color: Colors.amber),
             const Gap(4),
             Text('${user['rating']}'),
             const Gap(12),
-            const Icon(Icons.video_call, size: 14),
+            Icon(
+              Icons.video_call,
+              size: 14,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
             const Gap(4),
             Text('${user['sessions']} sessions'),
           ],
@@ -261,11 +347,16 @@ class _LeaderboardCard extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            const Text('points', style: TextStyle(fontSize: 11)),
+            Text(
+              'points',
+              style: TextStyle(
+                fontSize: 11,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

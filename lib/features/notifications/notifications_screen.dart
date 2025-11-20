@@ -61,174 +61,276 @@ class NotificationsScreen extends HookWidget {
       return null;
     }, [unreadCount]);
 
-    Future<void> refreshNotifications() async {
-      await Future.delayed(const Duration(seconds: 1));
-      // Simulate fetching new data
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Notifications updated')));
-      }
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const Text('Notifications'),
-            if (unreadCount > 0) ...[
-              const Gap(8),
-              Badge(
-                label: Text('$unreadCount'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              notifications.value = notifications.value.map((n) {
-                return {...n, 'read': true};
-              }).toList();
-            },
-            child: const Text('Mark all read'),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: refreshNotifications,
-        child: notifications.value.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.notifications_off_outlined,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.outline,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Notifications',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const Gap(16),
-                    const Text('No notifications'),
-                  ],
-                ),
-              )
-            : ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: notifications.value.length,
-                separatorBuilder: (_, index) => const Gap(12),
-                itemBuilder: (context, index) {
-                  final n = notifications.value[index];
-                  final isRead = n['read'] as bool;
-
-                  return Dismissible(
-                    key: Key(n['id'] as String),
-                    background: Container(
+                  ),
+                  if (unreadCount > 0) ...{
+                    const Gap(8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 20),
-                      child: const Icon(Icons.delete, color: Colors.white),
+                      child: Text(
+                        '$unreadCount',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) {
-                      notifications.value = notifications.value
-                          .where((item) => item['id'] != n['id'])
-                          .toList();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Notification dismissed'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              // Simple undo logic could be added here
-                            },
+                  },
+                ],
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              if (unreadCount > 0)
+                TextButton(
+                  onPressed: () {
+                    notifications.value = notifications.value.map((n) {
+                      return {...n, 'read': true};
+                    }).toList();
+                  },
+                  child: const Text('Mark all read'),
+                ),
+              const Gap(8),
+            ],
+          ),
+          notifications.value.isEmpty
+              ? SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.notifications_off_outlined,
+                          size: 64,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                        const Gap(16),
+                        Text(
+                          'No notifications',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final n = notifications.value[index];
+                      final isRead = n['read'] as bool;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Dismissible(
+                          key: Key(n['id'] as String),
+                          background: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) {
+                            notifications.value = notifications.value
+                                .where((item) => item['id'] != n['id'])
+                                .toList();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Notification dismissed'),
+                                action: SnackBarAction(
+                                  label: 'Undo',
+                                  onPressed: () {
+                                    // Simple undo logic could be added here
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isRead
+                                  ? Theme.of(context).colorScheme.surface
+                                  : Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer
+                                        .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isRead
+                                    ? Theme.of(context)
+                                          .colorScheme
+                                          .outlineVariant
+                                          .withValues(alpha: 0.5)
+                                    : Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.3),
+                                width: isRead ? 1 : 2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).shadowColor
+                                      .withValues(alpha: isRead ? 0.05 : 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: (n['color'] as Color).withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  n['icon'] as IconData,
+                                  color: n['color'] as Color,
+                                  size: 24,
+                                ),
+                              ),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      n['title'] as String,
+                                      style: TextStyle(
+                                        fontWeight: isRead
+                                            ? FontWeight.w600
+                                            : FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  if (!isRead)
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.5),
+                                            blurRadius: 4,
+                                            spreadRadius: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Gap(6),
+                                  Text(
+                                    n['body'] as String,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      height: 1.4,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  const Gap(8),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 12,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
+                                      const Gap(4),
+                                      Text(
+                                        n['time'] as String,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                // Mark as read on tap
+                                final updatedList = [...notifications.value];
+                                updatedList[index] = {...n, 'read': true};
+                                notifications.value = updatedList;
+                              },
+                            ),
                           ),
                         ),
                       );
-                    },
-                    child: Card(
-                      elevation: isRead ? 0 : 2,
-                      color: isRead
-                          ? Theme.of(context).colorScheme.surface
-                          : Theme.of(context).colorScheme.surfaceContainerLow,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: isRead
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(16),
-                        leading: CircleAvatar(
-                          backgroundColor: (n['color'] as Color).withValues(
-                            alpha: 0.1,
-                          ),
-                          child: Icon(
-                            n['icon'] as IconData,
-                            color: n['color'] as Color,
-                            size: 20,
-                          ),
-                        ),
-                        title: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                n['title'] as String,
-                                style: TextStyle(
-                                  fontWeight: isRead
-                                      ? FontWeight.normal
-                                      : FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            if (!isRead)
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Gap(4),
-                            Text(
-                              n['body'] as String,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const Gap(8),
-                            Text(
-                              n['time'] as String,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          // Mark as read on tap
-                          final updatedList = [...notifications.value];
-                          updatedList[index] = {...n, 'read': true};
-                          notifications.value = updatedList;
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
+                    }, childCount: notifications.value.length),
+                  ),
+                ),
+          const SliverGap(80),
+        ],
       ),
     );
   }

@@ -73,51 +73,95 @@ class EventsScreen extends HookWidget {
     final events = selectedTab.value == 0 ? upcomingEvents : pastEvents;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Events'),
-        actions: [
-          IconButton(icon: const Icon(Icons.filter_list), onPressed: () {}),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Tab Selector
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(
-                  value: 0,
-                  label: Text('Upcoming'),
-                  icon: Icon(Icons.event),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Events',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
-                ButtonSegment(
-                  value: 1,
-                  label: Text('Past'),
-                  icon: Icon(Icons.history),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
-              ],
-              selected: {selectedTab.value},
-              onSelectionChanged: (newSelection) {
-                selectedTab.value = newSelection.first;
-              },
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: () {},
+                style: IconButton.styleFrom(
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.5),
+                ),
+              ),
+              const Gap(8),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(
+                    value: 0,
+                    label: Text('Upcoming'),
+                    icon: Icon(Icons.event),
+                  ),
+                  ButtonSegment(
+                    value: 1,
+                    label: Text('Past'),
+                    icon: Icon(Icons.history),
+                  ),
+                ],
+                selected: {selectedTab.value},
+                onSelectionChanged: (newSelection) {
+                  selectedTab.value = newSelection.first;
+                },
+                style: ButtonStyle(
+                  side: WidgetStateProperty.all(
+                    BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-
-          // Events List
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: events.length,
-              itemBuilder: (context, index) {
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
                 final event = events[index];
                 return _EventCard(
                   event: event,
                   isUpcoming: selectedTab.value == 0,
                 );
-              },
+              }, childCount: events.length),
             ),
           ),
+          const SliverGap(80),
         ],
       ),
     );
@@ -132,8 +176,24 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,6 +229,13 @@ class _EventCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: event['color'] as Color,
                     borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     event['type'] as String,
@@ -255,6 +322,9 @@ class _EventCard extends StatelessWidget {
                       label: const Text('Registered'),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 44),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     )
                   else
@@ -264,6 +334,10 @@ class _EventCard extends StatelessWidget {
                       label: const Text('Register Now'),
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(double.infinity, 44),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
                       ),
                     )
                 else
@@ -274,6 +348,11 @@ class _EventCard extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.photo_library),
                           label: const Text('View Photos'),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
                       const Gap(12),
@@ -282,6 +361,11 @@ class _EventCard extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.video_library),
                           label: const Text('Recordings'),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
                     ],

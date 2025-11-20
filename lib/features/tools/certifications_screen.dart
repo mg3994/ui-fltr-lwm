@@ -25,49 +25,124 @@ class CertificationsScreen extends HookWidget {
     ]);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Certifications')),
+      body: certifications.value.isEmpty
+          ? CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 120,
+                  pinned: true,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  surfaceTintColor: Colors.transparent,
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+                    title: Text(
+                      'Certifications',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.primaryContainer
+                                .withValues(alpha: 0.3),
+                            Theme.of(context).scaffoldBackgroundColor,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.workspace_premium,
+                          size: 64,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                        const Gap(16),
+                        const Text('No certifications yet'),
+                        const Gap(8),
+                        Text(
+                          'Add your professional certifications',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 120,
+                  pinned: true,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  surfaceTintColor: Colors.transparent,
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+                    title: Text(
+                      'Certifications',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.primaryContainer
+                                .withValues(alpha: 0.3),
+                            Theme.of(context).scaffoldBackgroundColor,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final cert = certifications.value[index];
+                      return _CertificationCard(
+                        certification: cert,
+                        onDelete: () {
+                          certifications.value = certifications.value
+                              .where((c) => c != cert)
+                              .toList();
+                        },
+                      );
+                    }, childCount: certifications.value.length),
+                  ),
+                ),
+                const SliverGap(80),
+              ],
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _showAddCertDialog(context, certifications);
         },
         icon: const Icon(Icons.add),
         label: const Text('Add Certificate'),
+        elevation: 2,
       ),
-      body: certifications.value.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.workspace_premium,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                  const Gap(16),
-                  const Text('No certifications yet'),
-                  const Gap(8),
-                  const Text(
-                    'Add your professional certifications',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: certifications.value.length,
-              itemBuilder: (context, index) {
-                final cert = certifications.value[index];
-                return _CertificationCard(
-                  certification: cert,
-                  onDelete: () {
-                    certifications.value = certifications.value
-                        .where((c) => c != cert)
-                        .toList();
-                  },
-                );
-              },
-            ),
     );
   }
 
@@ -144,8 +219,24 @@ class _CertificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,6 +267,13 @@ class _CertificationCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -184,7 +282,11 @@ class _CertificationCard extends StatelessWidget {
                         Gap(4),
                         Text(
                           'Verified',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -248,6 +350,11 @@ class _CertificationCard extends StatelessWidget {
                         onPressed: () {},
                         icon: const Icon(Icons.share),
                         label: const Text('Share'),
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
                     ),
                     const Gap(12),
@@ -255,6 +362,9 @@ class _CertificationCard extends StatelessWidget {
                       onPressed: onDelete,
                       icon: const Icon(Icons.delete_outline),
                       color: Colors.red,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.red.withValues(alpha: 0.1),
+                      ),
                     ),
                   ],
                 ),

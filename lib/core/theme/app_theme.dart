@@ -19,6 +19,7 @@ abstract final class AppTheme {
     required Brightness brightness,
     FlexSchemeColor? flexSchemeColor,
     FlexScheme? flexSchemeEnum,
+    //  GoogleFonts.interTextTheme(), // custom dynamic font system
   }) {
     if (flexSchemeEnum == FlexScheme.custom) {
       return flexSchemeColor?.primary ??
@@ -47,7 +48,7 @@ abstract final class AppTheme {
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
       // Apply premium font.
-      textTheme: GoogleFonts.interTextTheme(),
+      textTheme: GoogleFonts.interTextTheme(), // custom dynamic font system
       primaryTextTheme: GoogleFonts.interTextTheme(),
       extensions: <BrandTheme>[
         BrandTheme(
