@@ -3,7 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 
 class PostDetailsScreen extends HookWidget {
-  const PostDetailsScreen({super.key});
+  final Map<String, String>? question;
+
+  const PostDetailsScreen({super.key, this.question});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,18 @@ class PostDetailsScreen extends HookWidget {
       },
     ]);
 
+    final displayQuestion =
+        question ??
+        {
+          'author': 'John Doe',
+          'avatar': 'https://i.pravatar.cc/150?u=20',
+          'time': '2 hours ago',
+          'title': 'How to handle state management in large Flutter apps?',
+          'body':
+              'I am building a complex app and confused between Riverpod, Bloc, and GetX. What do you recommend for scalability? I need something that is easy to test and maintain.',
+          'tag': 'Flutter',
+        };
+
     return Scaffold(
       appBar: AppBar(title: const Text('Question Details')),
       body: Column(
@@ -36,22 +50,20 @@ class PostDetailsScreen extends HookWidget {
                 // Question Header
                 Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(
-                        'https://i.pravatar.cc/150?u=20',
-                      ),
+                      backgroundImage: NetworkImage(displayQuestion['avatar']!),
                     ),
                     const Gap(12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'John Doe',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          displayQuestion['author']!,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '2 hours ago',
+                          displayQuestion['time']!,
                           style: TextStyle(
                             color: Theme.of(
                               context,
@@ -64,13 +76,16 @@ class PostDetailsScreen extends HookWidget {
                   ],
                 ),
                 const Gap(16),
-                const Text(
-                  'How to handle state management in large Flutter apps?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  displayQuestion['title']!,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Gap(12),
                 Text(
-                  'I am building a complex app and confused between Riverpod, Bloc, and GetX. What do you recommend for scalability? I need something that is easy to test and maintain.',
+                  displayQuestion['body']!,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.onSurface,

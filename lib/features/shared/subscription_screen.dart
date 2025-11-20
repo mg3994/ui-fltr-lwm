@@ -81,24 +81,36 @@ class SubscriptionScreen extends HookWidget {
           ...plans.map((plan) {
             final isSelected = selectedPlan.value == plan['id'];
             final isPopular = plan['popular'] == true;
+            final color = plan['color'] as Color;
 
             return GestureDetector(
               onTap: () => selectedPlan.value = plan['id'] as String,
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 16),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
                   border: Border.all(
                     color: isSelected
-                        ? Theme.of(context).colorScheme.primary
+                        ? color
                         : Theme.of(context).colorScheme.outlineVariant,
                     width: isSelected ? 2 : 1,
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ]
+                      : [],
                 ),
                 child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -124,7 +136,7 @@ class SubscriptionScreen extends HookWidget {
                                         style: TextStyle(
                                           fontSize: 36,
                                           fontWeight: FontWeight.bold,
-                                          color: plan['color'] as Color,
+                                          color: color,
                                         ),
                                       ),
                                       const Gap(4),
@@ -148,7 +160,7 @@ class SubscriptionScreen extends HookWidget {
                               if (isSelected)
                                 Icon(
                                   Icons.check_circle,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: color,
                                   size: 32,
                                 ),
                             ],
@@ -174,7 +186,9 @@ class SubscriptionScreen extends HookWidget {
                               ),
                             ),
                           ],
-                          const Gap(20),
+                          const Gap(24),
+                          const Divider(),
+                          const Gap(24),
                           ...(plan['features'] as List<String>).map(
                             (feature) => Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
@@ -183,10 +197,15 @@ class SubscriptionScreen extends HookWidget {
                                   Icon(
                                     Icons.check_circle,
                                     size: 20,
-                                    color: plan['color'] as Color,
+                                    color: color.withValues(alpha: 0.8),
                                   ),
                                   const Gap(12),
-                                  Expanded(child: Text(feature)),
+                                  Expanded(
+                                    child: Text(
+                                      feature,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -204,9 +223,9 @@ class SubscriptionScreen extends HookWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
+                            color: color,
                             borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(16),
+                              topRight: Radius.circular(22),
                               bottomLeft: Radius.circular(16),
                             ),
                           ),
@@ -237,6 +256,11 @@ class SubscriptionScreen extends HookWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
+                  icon: const Icon(
+                    Icons.check_circle,
+                    size: 48,
+                    color: Colors.green,
+                  ),
                   title: const Text('Subscription Confirmed'),
                   content: Text('You have subscribed to ${plan['name']} plan!'),
                   actions: [
@@ -253,8 +277,13 @@ class SubscriptionScreen extends HookWidget {
             },
             style: FilledButton.styleFrom(
               minimumSize: const Size(double.infinity, 56),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
-            child: const Text('Subscribe Now', style: TextStyle(fontSize: 16)),
+            child: const Text(
+              'Subscribe Now',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
 
           const Gap(16),
@@ -267,9 +296,9 @@ class SubscriptionScreen extends HookWidget {
             ),
             textAlign: TextAlign.center,
           ),
+          const Gap(32),
         ],
       ),
     );
   }
 }
-

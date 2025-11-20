@@ -11,6 +11,7 @@ class AppState {
   final isMentorMode = signal(false);
   final userAvatar = signal('https://i.pravatar.cc/150?u=99');
   final userName = signal('Manish Kumar');
+  final notificationCount = signal(3);
 }
 
 final appState = AppState();

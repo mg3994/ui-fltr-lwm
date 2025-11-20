@@ -11,6 +11,61 @@ class ForumScreen extends HookWidget {
   Widget build(BuildContext context) {
     final selectedTag = useState('All');
 
+    final questions = [
+      {
+        'id': '1',
+        'author': 'John Doe',
+        'avatar': 'https://i.pravatar.cc/150?u=20',
+        'tag': 'Flutter',
+        'title': 'How to handle state management in large Flutter apps?',
+        'body':
+            'I am building a complex app and confused between Riverpod, Bloc, and GetX. What do you recommend for scalability?',
+        'votes': '24',
+        'answers': '12',
+        'time': '2h ago',
+      },
+      {
+        'id': '2',
+        'author': 'Alice Smith',
+        'avatar': 'https://i.pravatar.cc/150?u=21',
+        'tag': 'Career',
+        'title': 'Is it worth learning native Android development in 2024?',
+        'body':
+            'I am a Flutter developer. Should I also learn Kotlin/Jetpack Compose to be more marketable?',
+        'votes': '15',
+        'answers': '8',
+        'time': '5h ago',
+      },
+      {
+        'id': '3',
+        'author': 'Robert Brown',
+        'avatar': 'https://i.pravatar.cc/150?u=22',
+        'tag': 'Interview',
+        'title': 'Top 50 Flutter Interview Questions for Senior Roles',
+        'body':
+            'I am preparing for a senior dev interview. Can anyone share their recent interview experiences?',
+        'votes': '42',
+        'answers': '20',
+        'time': '1d ago',
+      },
+      {
+        'id': '4',
+        'author': 'Emily White',
+        'avatar': 'https://i.pravatar.cc/150?u=23',
+        'tag': 'Dart',
+        'title': 'Understanding Isolates and Event Loop',
+        'body':
+            'Can someone explain how Isolates work in Dart and when to use them over simple Futures?',
+        'votes': '30',
+        'answers': '5',
+        'time': '2d ago',
+      },
+    ];
+
+    final filteredQuestions = selectedTag.value == 'All'
+        ? questions
+        : questions.where((q) => q['tag'] == selectedTag.value).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Community Q&A'),
@@ -58,10 +113,10 @@ class ForumScreen extends HookWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
-              itemCount: 10,
+              itemCount: filteredQuestions.length,
               separatorBuilder: (context, index) => const Gap(16),
               itemBuilder: (context, index) {
-                return const _QuestionCard();
+                return _QuestionCard(question: filteredQuestions[index]);
               },
             ),
           ),
@@ -72,7 +127,9 @@ class ForumScreen extends HookWidget {
 }
 
 class _QuestionCard extends StatelessWidget {
-  const _QuestionCard();
+  final Map<String, String> question;
+
+  const _QuestionCard({required this.question});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +143,9 @@ class _QuestionCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const PostDetailsScreen()),
+            MaterialPageRoute(
+              builder: (context) => PostDetailsScreen(question: question),
+            ),
           );
         },
         borderRadius: BorderRadius.circular(16),
@@ -97,15 +156,13 @@ class _QuestionCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 12,
-                    backgroundImage: NetworkImage(
-                      'https://i.pravatar.cc/150?u=20',
-                    ),
+                    backgroundImage: NetworkImage(question['avatar']!),
                   ),
                   const Gap(8),
                   Text(
-                    'John Doe',
+                    question['author']!,
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -122,7 +179,7 @@ class _QuestionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      'Flutter',
+                      question['tag']!,
                       style: TextStyle(
                         fontSize: 10,
                         color: Theme.of(
@@ -135,13 +192,16 @@ class _QuestionCard extends StatelessWidget {
                 ],
               ),
               const Gap(12),
-              const Text(
-                'How to handle state management in large Flutter apps?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                question['title']!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               const Gap(8),
               Text(
-                'I am building a complex app and confused between Riverpod, Bloc, and GetX. What do you recommend for scalability?',
+                question['body']!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -153,7 +213,7 @@ class _QuestionCard extends StatelessWidget {
                 children: [
                   _InteractionButton(
                     icon: Icons.arrow_upward,
-                    count: '24',
+                    count: question['votes']!,
                     onTap: () {},
                   ),
                   const Gap(16),
@@ -165,8 +225,16 @@ class _QuestionCard extends StatelessWidget {
                   const Gap(16),
                   _InteractionButton(
                     icon: Icons.chat_bubble_outline,
-                    count: '12 Answers',
+                    count: '${question['answers']} Answers',
                     onTap: () {},
+                  ),
+                  const Spacer(),
+                  Text(
+                    question['time']!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),

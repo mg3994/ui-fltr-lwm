@@ -64,102 +64,143 @@ class SkillAssessmentScreen extends HookWidget {
         : 0.0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Skill Assessment')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Stats Card
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.0, end: 1.0),
-            duration: const Duration(milliseconds: 800),
-            curve: Curves.easeOutBack,
-            builder: (context, value, child) {
-              return Transform.scale(
-                scale: 0.95 + (0.05 * value),
-                child: Opacity(opacity: value, child: child),
-              );
-            },
-            child: Card(
-              elevation: 4,
-              shadowColor: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.3),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              title: Text(
+                'Skill Assessment',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: Container(
+              background: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
                   gradient: LinearGradient(
                     colors: [
-                      Theme.of(context).colorScheme.surface,
                       Theme.of(
                         context,
-                      ).colorScheme.primary.withValues(alpha: 0.05),
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      Theme.of(context).scaffoldBackgroundColor,
                     ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                ),
-                padding: const EdgeInsets.all(24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _StatColumn(
-                      label: 'Completed',
-                      value: '$completedCount/${assessments.length}',
-                      icon: Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                    Container(
-                      width: 1,
-                      height: 50,
-                      color: Theme.of(context).colorScheme.outlineVariant,
-                    ),
-                    _StatColumn(
-                      label: 'Avg Score',
-                      value: '${averageScore.toInt()}%',
-                      icon: Icons.star,
-                      color: Colors.amber,
-                    ),
-                  ],
                 ),
               ),
             ),
           ),
-
-          const Gap(32),
-
-          const Text(
-            'Available Assessments',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Gap(16),
-
-          // Assessments List
-          ...assessments.asMap().entries.map((entry) {
-            final index = entry.key;
-            final assessment = entry.value;
-            final completed = assessment['completed'] as bool;
-            return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: Duration(milliseconds: 400 + (index * 100)),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Opacity(
-                  opacity: value,
-                  child: Transform.translate(
-                    offset: Offset(0, 20 * (1 - value)),
-                    child: child,
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Stats Card
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: 0.95 + (0.05 * value),
+                      child: Opacity(opacity: value, child: child),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.surface,
+                          Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.05),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(
+                            context,
+                          ).shadowColor.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _StatColumn(
+                          label: 'Completed',
+                          value: '$completedCount/${assessments.length}',
+                          icon: Icons.check_circle,
+                          color: Colors.green,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 50,
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                        _StatColumn(
+                          label: 'Avg Score',
+                          value: '${averageScore.toInt()}%',
+                          icon: Icons.star,
+                          color: Colors.amber,
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-              child: _AssessmentCard(
-                assessment: assessment,
-                completed: completed,
-              ),
-            );
-          }),
+                ),
+
+                const Gap(32),
+
+                const Text(
+                  'Available Assessments',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const Gap(16),
+
+                // Assessments List
+                ...assessments.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final assessment = entry.value;
+                  final completed = assessment['completed'] as bool;
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 400 + (index * 100)),
+                    curve: Curves.easeOut,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Transform.translate(
+                          offset: Offset(0, 20 * (1 - value)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _AssessmentCard(
+                      assessment: assessment,
+                      completed: completed,
+                    ),
+                  );
+                }),
+                const Gap(80),
+              ]),
+            ),
+          ),
         ],
       ),
     );
@@ -216,12 +257,23 @@ class _AssessmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
       ),
       child: InkWell(
         onTap: () {},

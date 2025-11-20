@@ -309,6 +309,18 @@ flutter build ios
 
 ## Recent Updates (Latest)
 
+### Version 1.2.0 - Community & Gamification
+✅ **New Features**:
+- **Community Suite**: Q&A Forum, Study Groups, Events, Resources, Leaderboard
+- **Gamification**: Badges, Streaks, Achievements
+- **Tool Suite**: Career Path, Resume Builder, Portfolio Builder, Interview Prep, Job Board, Certifications, Skill Assessment, Goals, Referrals
+- **Notifications**: Dynamic badge count and global state integration
+
+✅ **Improvements**:
+- Enhanced `MainScreen` drawer with comprehensive navigation
+- Dynamic data integration for Forum and Post Details
+- Global notification state management
+
 ### Version 1.1.0 - Advanced Features
 ✅ **New Features**:
 - Global Search with multi-type filtering

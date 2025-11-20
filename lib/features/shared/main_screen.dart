@@ -21,6 +21,12 @@ import 'package:linkwithmentor/features/tools/portfolio_builder_screen.dart';
 import 'package:linkwithmentor/features/tools/badges_screen.dart';
 import 'package:linkwithmentor/features/tools/streaks_screen.dart';
 import 'package:linkwithmentor/features/tools/achievements_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_assessment_screen.dart';
+import 'package:linkwithmentor/features/community/forum_screen.dart';
+import 'package:linkwithmentor/features/community/study_groups_screen.dart';
+import 'package:linkwithmentor/features/community/events_screen.dart';
+import 'package:linkwithmentor/features/community/resources_screen.dart';
+import 'package:linkwithmentor/features/community/leaderboard_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -145,6 +151,12 @@ class MainScreen extends HookWidget {
               Icons.workspace_premium,
               const CertificationsScreen(),
             ),
+            _buildDrawerItem(
+              context,
+              'Skill Assessment',
+              Icons.assessment,
+              const SkillAssessmentScreen(),
+            ),
             _buildDrawerItem(context, 'Goals', Icons.flag, const GoalsScreen()),
             _buildDrawerItem(
               context,
@@ -177,6 +189,44 @@ class MainScreen extends HookWidget {
               'Achievements',
               Icons.emoji_events,
               const AchievementsScreen(),
+            ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Community',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            _buildDrawerItem(
+              context,
+              'Q&A Forum',
+              Icons.forum,
+              const ForumScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Study Groups',
+              Icons.groups,
+              const StudyGroupsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Events',
+              Icons.event,
+              const EventsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Resources',
+              Icons.library_books,
+              const ResourcesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Leaderboard',
+              Icons.leaderboard,
+              const LeaderboardScreen(),
             ),
           ],
         ),

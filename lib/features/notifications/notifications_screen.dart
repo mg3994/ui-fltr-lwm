@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 
+import 'package:linkwithmentor/core/state/app_state.dart';
+
 class NotificationsScreen extends HookWidget {
   const NotificationsScreen({super.key});
 
@@ -50,6 +52,14 @@ class NotificationsScreen extends HookWidget {
     final unreadCount = notifications.value
         .where((n) => n['read'] == false)
         .length;
+
+    useEffect(() {
+      // Sync global notification count
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        appState.notificationCount.value = unreadCount;
+      });
+      return null;
+    }, [unreadCount]);
 
     Future<void> refreshNotifications() async {
       await Future.delayed(const Duration(seconds: 1));

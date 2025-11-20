@@ -77,118 +77,196 @@ class WalletScreen extends HookWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Balance Card
-          Card(
-            child: Container(
-              padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Available Balance',
-                    style: TextStyle(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onPrimary.withValues(alpha: 0.9),
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Gap(8),
-                  Text(
-                    '\$${balance.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Gap(16),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.hourglass_empty,
-                        size: 16,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary.withValues(alpha: 0.9),
-                      ),
-                      const Gap(4),
-                      Text(
-                        'Pending: \$${pendingEarnings.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onPrimary.withValues(alpha: 0.9),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+          // Credit Card Visualization
+          Container(
+            height: 200,
+            padding: const EdgeInsets.all(24.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.tertiary,
                 ],
               ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Available Balance',
+                      style: TextStyle(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary.withValues(alpha: 0.8),
+                        fontSize: 14,
+                      ),
+                    ),
+                    Icon(
+                      Icons.contactless,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onPrimary.withValues(alpha: 0.8),
+                    ),
+                  ],
+                ),
+                Text(
+                  '\$${balance.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Card Holder',
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary.withValues(alpha: 0.6),
+                            fontSize: 10,
+                          ),
+                        ),
+                        Text(
+                          'Manish',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Expires',
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary.withValues(alpha: 0.6),
+                            fontSize: 10,
+                          ),
+                        ),
+                        Text(
+                          '12/28',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
 
-          const Gap(16),
+          const Gap(24),
+
+          // Pending Balance
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.hourglass_empty,
+                    color: Colors.orange,
+                  ),
+                ),
+                const Gap(16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pending Clearance',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Text(
+                      '\$${pendingEarnings.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                TextButton(onPressed: () {}, child: const Text('Details')),
+              ],
+            ),
+          ),
+
+          const Gap(24),
 
           // Quick Actions
           Row(
             children: [
               Expanded(
-                child: FilledButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Funds'),
+                child: _ActionButton(
+                  icon: Icons.add,
+                  label: 'Add Funds',
+                  onTap: () {},
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const Gap(12),
+              const Gap(16),
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.arrow_upward),
-                  label: const Text('Withdraw'),
-                ),
-              ),
-            ],
-          ),
-
-          const Gap(24),
-
-          // Stats
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'This Month',
-                  value: '\$450',
-                  icon: Icons.calendar_today,
+                child: _ActionButton(
+                  icon: Icons.arrow_upward,
+                  label: 'Withdraw',
+                  onTap: () {},
                   color: Colors.green,
                 ),
               ),
-              const Gap(12),
+              const Gap(16),
               Expanded(
-                child: _StatCard(
-                  title: 'Total Earned',
-                  value: '\$3,250',
-                  icon: Icons.trending_up,
+                child: _ActionButton(
+                  icon: Icons.swap_horiz,
+                  label: 'Transfer',
+                  onTap: () {},
                   color: Colors.blue,
                 ),
               ),
             ],
           ),
 
-          const Gap(24),
+          const Gap(32),
 
           // Transactions
           Row(
@@ -201,7 +279,7 @@ class WalletScreen extends HookWidget {
               TextButton(onPressed: () {}, child: const Text('View All')),
             ],
           ),
-          const Gap(12),
+          const Gap(16),
 
           ...transactions.map(
             (transaction) => _TransactionCard(transaction: transaction),
@@ -212,39 +290,41 @@ class WalletScreen extends HookWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
+class _ActionButton extends StatelessWidget {
   final IconData icon;
+  final String label;
+  final VoidCallback onTap;
   final Color color;
 
-  const _StatCard({
-    required this.title,
-    required this.value,
+  const _ActionButton({
     required this.icon,
+    required this.label,
+    required this.onTap,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: color, size: 24),
+            Icon(icon, color: color),
             const Gap(8),
             Text(
-              value,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const Gap(4),
-            Text(
-              title,
+              label,
               style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: color,
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -265,30 +345,47 @@ class _TransactionCard extends StatelessWidget {
     final amount = transaction['amount'] as double;
     final isPending = transaction['status'] == 'pending';
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isCredit
                 ? Colors.green.withValues(alpha: 0.1)
                 : Colors.red.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             transaction['icon'] as IconData,
             color: isCredit ? Colors.green : Colors.red,
+            size: 20,
           ),
         ),
-        title: Text(transaction['title'] as String),
+        title: Text(
+          transaction['title'] as String,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Gap(4),
             Text(
               transaction['description'] as String,
-              style: const TextStyle(fontSize: 12),
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const Gap(4),
             Row(
@@ -337,4 +434,3 @@ class _TransactionCard extends StatelessWidget {
     );
   }
 }
-

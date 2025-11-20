@@ -11,24 +11,108 @@ class ResumeBuilderScreen extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Resume Builder')),
       body: Column(
         children: [
-          // Progress Indicator
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.0, end: (currentStep.value + 1) / 4),
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            builder: (context, value, _) {
-              return LinearProgressIndicator(
-                value: value,
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest,
-                minHeight: 6,
-              );
-            },
+          // Custom Header
+          Container(
+            padding: const EdgeInsets.only(
+              top: 60,
+              left: 16,
+              right: 16,
+              bottom: 24,
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  Theme.of(context).colorScheme.surface,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.pop(context),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                      ),
+                    ),
+                    const Expanded(
+                      child: Text(
+                        'Resume Builder',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(width: 48), // Balance the back button
+                  ],
+                ),
+                const Gap(24),
+                // Progress Indicator
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: (currentStep.value + 1) / 4),
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                    builder: (context, value, _) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Step ${currentStep.value + 1} of 4',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${(value * 100).toInt()}%',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Gap(8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: value,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
+                              minHeight: 8,
+                              valueColor: AlwaysStoppedAnimation(
+                                Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
+
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 500),
@@ -81,55 +165,68 @@ class ResumeBuilderScreen extends HookWidget {
               color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
+                  color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+                  blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),
               ],
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
-            child: Row(
-              children: [
-                if (currentStep.value > 0)
+            child: SafeArea(
+              child: Row(
+                children: [
+                  if (currentStep.value > 0)
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => currentStep.value--,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text('Back'),
+                      ),
+                    ),
+                  if (currentStep.value > 0) const Gap(16),
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => currentStep.value--,
-                      style: OutlinedButton.styleFrom(
+                    child: FilledButton(
+                      onPressed: () {
+                        if (currentStep.value < 3) {
+                          currentStep.value++;
+                        } else {
+                          // Finish
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Resume Generated!'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      },
+                      style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(16),
                         ),
+                        shadowColor: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.4),
+                        elevation: 4,
                       ),
-                      child: const Text('Back'),
-                    ),
-                  ),
-                if (currentStep.value > 0) const Gap(16),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      if (currentStep.value < 3) {
-                        currentStep.value++;
-                      } else {
-                        // Finish
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Resume Generated!'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      child: Text(
+                        currentStep.value == 3 ? 'Generate PDF' : 'Next',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    child: Text(
-                      currentStep.value == 3 ? 'Generate PDF' : 'Next',
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -172,11 +269,11 @@ class ResumeBuilderScreen extends HookWidget {
       case 0:
         return const Column(
           children: [
-            _CustomTextField(label: 'Full Name', icon: Icons.person),
+            _CustomTextField(label: 'Full Name', icon: Icons.person_outline),
             Gap(20),
-            _CustomTextField(label: 'Email', icon: Icons.email),
+            _CustomTextField(label: 'Email', icon: Icons.email_outlined),
             Gap(20),
-            _CustomTextField(label: 'Phone', icon: Icons.phone),
+            _CustomTextField(label: 'Phone', icon: Icons.phone_outlined),
             Gap(20),
             _CustomTextField(label: 'LinkedIn URL', icon: Icons.link),
           ],
@@ -184,7 +281,10 @@ class ResumeBuilderScreen extends HookWidget {
       case 1:
         return Column(
           children: [
-            const _CustomTextField(label: 'Job Title', icon: Icons.work),
+            const _CustomTextField(
+              label: 'Job Title',
+              icon: Icons.work_outline,
+            ),
             const Gap(20),
             const _CustomTextField(label: 'Company', icon: Icons.business),
             const Gap(20),
@@ -193,14 +293,14 @@ class ResumeBuilderScreen extends HookWidget {
                 const Expanded(
                   child: _CustomTextField(
                     label: 'Start Date',
-                    icon: Icons.calendar_today,
+                    icon: Icons.calendar_today_outlined,
                   ),
                 ),
                 const Gap(16),
                 const Expanded(
                   child: _CustomTextField(
                     label: 'End Date',
-                    icon: Icons.calendar_today,
+                    icon: Icons.calendar_today_outlined,
                   ),
                 ),
               ],
@@ -208,7 +308,7 @@ class ResumeBuilderScreen extends HookWidget {
             const Gap(20),
             const _CustomTextField(
               label: 'Description',
-              icon: Icons.description,
+              icon: Icons.description_outlined,
               maxLines: 4,
             ),
             const Gap(32),
@@ -221,7 +321,12 @@ class ResumeBuilderScreen extends HookWidget {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  side: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -231,13 +336,19 @@ class ResumeBuilderScreen extends HookWidget {
       case 2:
         return const Column(
           children: [
-            _CustomTextField(label: 'School / University', icon: Icons.school),
+            _CustomTextField(
+              label: 'School / University',
+              icon: Icons.school_outlined,
+            ),
             Gap(20),
-            _CustomTextField(label: 'Degree', icon: Icons.workspace_premium),
+            _CustomTextField(
+              label: 'Degree',
+              icon: Icons.workspace_premium_outlined,
+            ),
             Gap(20),
             _CustomTextField(
               label: 'Graduation Year',
-              icon: Icons.calendar_today,
+              icon: Icons.calendar_today_outlined,
             ),
           ],
         );
@@ -248,7 +359,9 @@ class ResumeBuilderScreen extends HookWidget {
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: Theme.of(
+                context,
+              ).colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
           ),
           child: Column(
