@@ -20,7 +20,7 @@ class ForumScreen extends HookWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CreatePostScreen()),
+            MaterialPageRoute(builder: (context) => const CreatePostScreen()),
           );
         },
         label: const Text('Ask Question'),
@@ -59,7 +59,7 @@ class ForumScreen extends HookWidget {
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: 10,
-              separatorBuilder: (_, __) => const Gap(16),
+              separatorBuilder: (context, index) => const Gap(16),
               itemBuilder: (context, index) {
                 return const _QuestionCard();
               },
@@ -86,7 +86,7 @@ class _QuestionCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const PostDetailsScreen()),
+            MaterialPageRoute(builder: (context) => const PostDetailsScreen()),
           );
         },
         borderRadius: BorderRadius.circular(16),

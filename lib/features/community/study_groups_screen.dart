@@ -136,7 +136,7 @@ class _GroupCard extends StatelessWidget {
                 height: 120,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (context, error, stackTrace) => Container(
                   height: 120,
                   color: (group['color'] as Color).withValues(alpha: 0.2),
                   child: Center(
@@ -262,4 +262,3 @@ class _GroupCard extends StatelessWidget {
     );
   }
 }
-

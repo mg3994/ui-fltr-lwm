@@ -15,49 +15,90 @@ class ResumeBuilderScreen extends HookWidget {
       body: Column(
         children: [
           // Progress Indicator
-          LinearProgressIndicator(
-            value: (currentStep.value + 1) / 4,
-            backgroundColor: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: (currentStep.value + 1) / 4),
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            builder: (context, value, _) {
+              return LinearProgressIndicator(
+                value: value,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
+                minHeight: 6,
+              );
+            },
           ),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _getStepTitle(currentStep.value),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0.1, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: SingleChildScrollView(
+                key: ValueKey<int>(currentStep.value),
+                padding: const EdgeInsets.all(24),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getStepTitle(currentStep.value),
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const Gap(8),
-                    Text(
-                      _getStepDescription(currentStep.value),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      const Gap(8),
+                      Text(
+                        _getStepDescription(currentStep.value),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                    const Gap(32),
-                    _buildStepContent(currentStep.value, context),
-                  ],
+                      const Gap(32),
+                      _buildStepContent(currentStep.value, context),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          Container(
+            padding: const EdgeInsets.all(24.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
             child: Row(
               children: [
                 if (currentStep.value > 0)
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => currentStep.value--,
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       child: const Text('Back'),
                     ),
                   ),
@@ -70,10 +111,19 @@ class ResumeBuilderScreen extends HookWidget {
                       } else {
                         // Finish
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Resume Generated!')),
+                          const SnackBar(
+                            content: Text('Resume Generated!'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
                         );
                       }
                     },
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: Text(
                       currentStep.value == 3 ? 'Generate PDF' : 'Next',
                     ),
@@ -123,11 +173,11 @@ class ResumeBuilderScreen extends HookWidget {
         return const Column(
           children: [
             _CustomTextField(label: 'Full Name', icon: Icons.person),
-            Gap(16),
+            Gap(20),
             _CustomTextField(label: 'Email', icon: Icons.email),
-            Gap(16),
+            Gap(20),
             _CustomTextField(label: 'Phone', icon: Icons.phone),
-            Gap(16),
+            Gap(20),
             _CustomTextField(label: 'LinkedIn URL', icon: Icons.link),
           ],
         );
@@ -135,9 +185,9 @@ class ResumeBuilderScreen extends HookWidget {
         return Column(
           children: [
             const _CustomTextField(label: 'Job Title', icon: Icons.work),
-            const Gap(16),
+            const Gap(20),
             const _CustomTextField(label: 'Company', icon: Icons.business),
-            const Gap(16),
+            const Gap(20),
             Row(
               children: [
                 const Expanded(
@@ -155,17 +205,26 @@ class ResumeBuilderScreen extends HookWidget {
                 ),
               ],
             ),
-            const Gap(16),
+            const Gap(20),
             const _CustomTextField(
               label: 'Description',
               icon: Icons.description,
-              maxLines: 3,
+              maxLines: 4,
             ),
-            const Gap(24),
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.add),
-              label: const Text('Add Another Position'),
+            const Gap(32),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.add),
+                label: const Text('Add Another Position'),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -173,9 +232,9 @@ class ResumeBuilderScreen extends HookWidget {
         return const Column(
           children: [
             _CustomTextField(label: 'School / University', icon: Icons.school),
-            Gap(16),
+            Gap(20),
             _CustomTextField(label: 'Degree', icon: Icons.workspace_premium),
-            Gap(16),
+            Gap(20),
             _CustomTextField(
               label: 'Graduation Year',
               icon: Icons.calendar_today,
@@ -184,23 +243,49 @@ class ResumeBuilderScreen extends HookWidget {
         );
       case 3:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
-          child: const Column(
+          child: Column(
             children: [
-              Icon(Icons.picture_as_pdf, size: 64, color: Colors.red),
-              Gap(16),
-              Text(
-                'Preview Available',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.picture_as_pdf,
+                  size: 48,
+                  color: Colors.red,
+                ),
               ),
-              Text('Your resume is ready to be generated.'),
+              const Gap(24),
+              const Text(
+                'Ready to Generate',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const Gap(8),
+              Text(
+                'Your resume has been compiled and is ready for download.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const Gap(24),
+              const Divider(),
+              const Gap(16),
+              _PreviewRow(label: 'Template', value: 'Modern Professional'),
+              const Gap(12),
+              _PreviewRow(label: 'Format', value: 'PDF (A4)'),
+              const Gap(12),
+              _PreviewRow(label: 'Size', value: '~1.2 MB'),
             ],
           ),
         );
@@ -228,10 +313,52 @@ class _CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2,
+          ),
+        ),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,
+        contentPadding: const EdgeInsets.all(16),
       ),
+    );
+  }
+}
+
+class _PreviewRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _PreviewRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+      ],
     );
   }
 }

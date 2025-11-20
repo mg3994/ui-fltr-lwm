@@ -72,48 +72,146 @@ class InterviewPrepScreen extends HookWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Progress Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Your Progress',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const Gap(16),
-                  LinearProgressIndicator(
-                    value: 0.35,
-                    minHeight: 10,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  const Gap(8),
-                  const Text('155 / 490 questions completed'),
-                  const Gap(16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _StatColumn(
-                        label: 'Streak',
-                        value: '7 days',
-                        icon: Icons.local_fire_department,
-                        color: Colors.orange,
-                      ),
-                      _StatColumn(
-                        label: 'This Week',
-                        value: '12',
-                        icon: Icons.calendar_today,
-                        color: Colors.blue,
-                      ),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: 0.95 + (0.05 * value),
+                child: Opacity(opacity: value, child: child),
+              );
+            },
+            child: Card(
+              elevation: 4,
+              shadowColor: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.05),
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
+                ),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Your Progress',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Level 5',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(20),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 0.35),
+                      duration: const Duration(seconds: 1),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) {
+                        return Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: value,
+                                minHeight: 12,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                            const Gap(8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${(value * 100).toInt()}% Complete',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                                const Text('155 / 490 questions'),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const Gap(24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _StatColumn(
+                          label: 'Streak',
+                          value: '7 days',
+                          icon: Icons.local_fire_department,
+                          color: Colors.orange,
+                        ),
+                        Container(
+                          height: 40,
+                          width: 1,
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                        _StatColumn(
+                          label: 'This Week',
+                          value: '12',
+                          icon: Icons.calendar_today,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
 
-          const Gap(24),
+          const Gap(32),
 
           // Categories
           const Text(
@@ -122,9 +220,27 @@ class InterviewPrepScreen extends HookWidget {
           ),
           const Gap(16),
 
-          ...categories.map((category) => _CategoryCard(category: category)),
+          ...categories.asMap().entries.map((entry) {
+            final index = entry.key;
+            final category = entry.value;
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: Duration(milliseconds: 400 + (index * 100)),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: _CategoryCard(category: category),
+            );
+          }),
 
-          const Gap(24),
+          const Gap(32),
 
           // Recent Questions
           const Text(
@@ -133,9 +249,25 @@ class InterviewPrepScreen extends HookWidget {
           ),
           const Gap(16),
 
-          ...recentQuestions.map(
-            (question) => _QuestionCard(question: question),
-          ),
+          ...recentQuestions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final question = entry.value;
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: Duration(milliseconds: 600 + (index * 100)),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: _QuestionCard(question: question),
+            );
+          }),
         ],
       ),
     );
@@ -159,7 +291,14 @@ class _StatColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, color: color, size: 32),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 24),
+        ),
         const Gap(8),
         Text(
           value,
@@ -190,9 +329,14 @@ class _CategoryCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
       child: InkWell(
         onTap: () {},
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -201,7 +345,7 @@ class _CategoryCard extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: (category['color'] as Color).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   category['icon'] as IconData,
@@ -222,15 +366,26 @@ class _CategoryCard extends StatelessWidget {
                       ),
                     ),
                     const Gap(8),
-                    LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 6,
-                      borderRadius: BorderRadius.circular(3),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 6,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          category['color'] as Color,
+                        ),
+                      ),
                     ),
                     const Gap(4),
                     Text(
                       '$completed / $total completed',
-                      style: const TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -256,11 +411,16 @@ class _QuestionCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
       child: InkWell(
         onTap: () {},
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -272,8 +432,10 @@ class _QuestionCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      color: _getDifficultyColor(
+                        difficulty,
+                      ).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       difficulty,
@@ -294,11 +456,14 @@ class _QuestionCard extends StatelessWidget {
                       color: Theme.of(
                         context,
                       ).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       question['category'] as String,
-                      style: const TextStyle(fontSize: 11),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                   const Spacer(),
@@ -313,15 +478,28 @@ class _QuestionCard extends StatelessWidget {
               const Gap(12),
               Text(
                 question['question'] as String,
-                style: const TextStyle(fontSize: 15),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
               ),
-              const Gap(12),
-              FilledButton.icon(
-                onPressed: () {},
-                icon: Icon(answered ? Icons.replay : Icons.play_arrow),
-                label: Text(answered ? 'Review Answer' : 'Practice'),
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 40),
+              const Gap(16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    answered ? Icons.replay : Icons.play_arrow,
+                    size: 18,
+                  ),
+                  label: Text(answered ? 'Review Answer' : 'Practice Now'),
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
                 ),
               ),
             ],
@@ -344,4 +522,3 @@ class _QuestionCard extends StatelessWidget {
     }
   }
 }
-

@@ -37,7 +37,7 @@ class MentorProfileScreen extends HookWidget {
                     Image.network(
                       mentor.imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
+                      errorBuilder: (context, error, stackTrace) =>
                           Container(color: Colors.grey),
                     ),
                     const DecoratedBox(
@@ -231,7 +231,7 @@ class _ReviewsTab extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: 5,
-      separatorBuilder: (_, __) => const Divider(),
+      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         return ListTile(
           leading: const CircleAvatar(child: Icon(Icons.person)),
@@ -249,4 +249,3 @@ class _ReviewsTab extends StatelessWidget {
     );
   }
 }
-

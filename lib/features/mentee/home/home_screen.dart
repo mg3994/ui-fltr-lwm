@@ -114,7 +114,7 @@ class HomeScreen extends HookWidget {
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: kMockMentors.length,
-                          separatorBuilder: (_, __) => const Gap(16),
+                          separatorBuilder: (context, index) => const Gap(16),
                           itemBuilder: (context, index) {
                             final mentor = kMockMentors[index];
                             return FeaturedMentorCard(mentor: mentor);
@@ -261,7 +261,7 @@ class MentorListCard extends StatelessWidget {
             CircleAvatar(
               radius: 30,
               backgroundImage: NetworkImage(mentor.imageUrl),
-              onBackgroundImageError: (_, __) {},
+              onBackgroundImageError: (exception, stackTrace) {},
             ),
             const Gap(16),
             Expanded(
@@ -346,4 +346,3 @@ class MentorListCard extends StatelessWidget {
     );
   }
 }
-

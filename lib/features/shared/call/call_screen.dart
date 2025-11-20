@@ -26,7 +26,8 @@ class CallScreen extends HookWidget {
           Image.network(
             userImage,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(color: Colors.grey[900]),
+            errorBuilder: (context, error, stackTrace) =>
+                Container(color: Colors.grey[900]),
           ),
 
           // Overlay Gradient
@@ -168,4 +169,3 @@ class CallScreen extends HookWidget {
     );
   }
 }
-

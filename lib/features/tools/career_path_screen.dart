@@ -70,22 +70,59 @@ class CareerPathScreen extends HookWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'Explore Your Future',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
-          const Gap(8),
-          Text(
-            'Choose a career path and get personalized mentorship',
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOut,
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset(0, 20 * (1 - value)),
+                  child: child,
+                ),
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Explore Your Future',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                const Gap(8),
+                Text(
+                  'Choose a career path and get personalized mentorship',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           ),
           const Gap(24),
 
           // Career Paths
-          ...careerPaths.map((path) => _CareerPathCard(path: path)),
+          ...careerPaths.asMap().entries.map((entry) {
+            final index = entry.key;
+            final path = entry.value;
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: Duration(milliseconds: 600 + (index * 100)),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 30 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: _CareerPathCard(path: path),
+            );
+          }),
         ],
       ),
     );
@@ -100,14 +137,28 @@ class _CareerPathCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 20),
+      elevation: 4,
+      shadowColor: (path['color'] as Color).withValues(alpha: 0.3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: InkWell(
         onTap: () {
           // Navigate to detailed career path
         },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.surface,
+                (path['color'] as Color).withValues(alpha: 0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -117,7 +168,7 @@ class _CareerPathCard extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: (path['color'] as Color).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
                       path['icon'] as IconData,
@@ -137,10 +188,10 @@ class _CareerPathCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Gap(4),
+                        const Gap(8),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
+                            horizontal: 10,
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
@@ -148,6 +199,11 @@ class _CareerPathCard extends StatelessWidget {
                               path['level'] as String,
                             ).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _getLevelColor(
+                                path['level'] as String,
+                              ).withValues(alpha: 0.2),
+                            ),
                           ),
                           child: Text(
                             path['level'] as String,
@@ -163,14 +219,16 @@ class _CareerPathCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const Gap(16),
+              const Gap(20),
               Text(
                 path['description'] as String,
                 style: TextStyle(
+                  fontSize: 15,
+                  height: 1.4,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              const Gap(16),
+              const Gap(20),
 
               // Skills
               Wrap(
@@ -186,16 +244,22 @@ class _CareerPathCard extends StatelessWidget {
                       color: Theme.of(
                         context,
                       ).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(skill, style: const TextStyle(fontSize: 12)),
+                    child: Text(
+                      skill,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   );
                 }).toList(),
               ),
 
+              const Gap(20),
+              Divider(color: Theme.of(context).colorScheme.outlineVariant),
               const Gap(16),
-              const Divider(),
-              const Gap(12),
 
               // Stats
               Row(
@@ -213,16 +277,22 @@ class _CareerPathCard extends StatelessWidget {
                 ],
               ),
 
-              const Gap(16),
+              const Gap(20),
 
               // Action Button
-              FilledButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('Start Learning'),
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 44),
-                  backgroundColor: path['color'] as Color,
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.arrow_forward, size: 18),
+                  label: const Text('Start Learning'),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 48),
+                    backgroundColor: path['color'] as Color,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -262,11 +332,12 @@ class _InfoChip extends StatelessWidget {
           size: 16,
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
-        const Gap(4),
+        const Gap(6),
         Text(
           label,
           style: TextStyle(
             fontSize: 12,
+            fontWeight: FontWeight.w500,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
@@ -274,4 +345,3 @@ class _InfoChip extends StatelessWidget {
     );
   }
 }
-

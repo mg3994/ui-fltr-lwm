@@ -21,7 +21,8 @@ class CreatePostScreen extends HookWidget {
         barrierDismissible: false,
         barrierLabel: 'Success',
         transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (_, __, ___) => const SizedBox(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const SizedBox(),
         transitionBuilder: (context, animation, secondaryAnimation, child) {
           return ScaleTransition(
             scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
@@ -78,8 +79,10 @@ class CreatePostScreen extends HookWidget {
       );
 
       Future.delayed(const Duration(seconds: 2), () {
-        Navigator.of(context).pop(); // Close dialog
-        Navigator.of(context).pop(); // Close screen
+        if (context.mounted) {
+          Navigator.of(context).pop(); // Close dialog
+          Navigator.of(context).pop(); // Close screen
+        }
       });
     }
 

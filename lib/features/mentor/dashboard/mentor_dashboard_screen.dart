@@ -19,7 +19,9 @@ class MentorDashboardScreen extends HookWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen(),
+                ),
               );
             },
           ),
@@ -236,7 +238,7 @@ class _PendingRequests extends HookWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: requests.value.length,
-          separatorBuilder: (_, __) => const Gap(12),
+          separatorBuilder: (context, index) => const Gap(12),
           itemBuilder: (context, index) {
             final req = requests.value[index];
             return _RequestCard(
@@ -371,4 +373,3 @@ class _RequestCard extends StatelessWidget {
     );
   }
 }
-

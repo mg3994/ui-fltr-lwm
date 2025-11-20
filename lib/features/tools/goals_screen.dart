@@ -34,6 +34,14 @@ class GoalsScreen extends HookWidget {
       },
     ]);
 
+    final totalProgress =
+        goals.value.fold<double>(
+          0.0,
+          (sum, goal) =>
+              sum + ((goal['progress'] as int) / (goal['total'] as int)),
+        ) /
+        goals.value.length;
+
     return Scaffold(
       appBar: AppBar(title: const Text('My Goals')),
       floatingActionButton: FloatingActionButton.extended(
@@ -46,43 +54,141 @@ class GoalsScreen extends HookWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Overall Progress
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Overall Progress',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          // Overall Progress Card
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: 0.95 + (0.05 * value),
+                child: Opacity(opacity: value, child: child),
+              );
+            },
+            child: Card(
+              elevation: 4,
+              shadowColor: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primaryContainer,
+                      Theme.of(context).colorScheme.secondaryContainer,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  const Gap(16),
-                  LinearProgressIndicator(
-                    value: 0.65,
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  const Gap(8),
-                  const Text(
-                    '65% Complete',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ],
+                ),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.emoji_events,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 28,
+                          ),
+                        ),
+                        const Gap(16),
+                        const Expanded(
+                          child: Text(
+                            'Overall Progress',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(20),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: totalProgress),
+                      duration: const Duration(milliseconds: 1200),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) {
+                        return Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: value,
+                                minHeight: 12,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                            const Gap(12),
+                            Text(
+                              '${(value * 100).toInt()}% Complete',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          const Gap(24),
+          const Gap(32),
+
+          // Goals List Header
+          const Text(
+            'Active Goals',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const Gap(16),
 
           // Goals List
-          ...goals.value.map(
-            (goal) => _GoalCard(
-              goal: goal,
-              onDelete: () {
-                goals.value = goals.value.where((g) => g != goal).toList();
+          ...goals.value.asMap().entries.map((entry) {
+            final index = entry.key;
+            final goal = entry.value;
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: Duration(milliseconds: 400 + (index * 100)),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: child,
+                  ),
+                );
               },
-            ),
-          ),
+              child: _GoalCard(
+                goal: goal,
+                onDelete: () {
+                  goals.value = goals.value.where((g) => g != goal).toList();
+                },
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -164,25 +270,31 @@ class _GoalCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: (goal['color'] as Color).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     goal['icon'] as IconData,
                     color: goal['color'] as Color,
+                    size: 24,
                   ),
                 ),
-                const Gap(12),
+                const Gap(16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,11 +306,27 @@ class _GoalCard extends StatelessWidget {
                           fontSize: 16,
                         ),
                       ),
-                      Text(
-                        goal['category'] as String,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      const Gap(4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          goal['category'] as String,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                     ],
@@ -211,22 +339,47 @@ class _GoalCard extends StatelessWidget {
                 ),
               ],
             ),
-            const Gap(16),
+            const Gap(20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$progress / $total'),
-                Text('${(percentage * 100).toInt()}%'),
+                Text(
+                  '$progress / $total',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '${(percentage * 100).toInt()}%',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
               ],
             ),
-            const Gap(8),
-            LinearProgressIndicator(
-              value: percentage,
-              minHeight: 6,
-              borderRadius: BorderRadius.circular(3),
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.surfaceContainerHighest,
+            const Gap(12),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: percentage),
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeOut,
+              builder: (context, value, _) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: value,
+                    minHeight: 8,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      goal['color'] as Color,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -234,4 +387,3 @@ class _GoalCard extends StatelessWidget {
     );
   }
 }
-
