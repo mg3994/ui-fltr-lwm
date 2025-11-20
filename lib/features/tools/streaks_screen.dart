@@ -133,7 +133,7 @@ class StreaksScreen extends HookWidget {
                   return Container(
                     decoration: BoxDecoration(
                       color: isActive
-                          ? Colors.orange.withOpacity(0.8)
+                          ? Colors.orange.withValues(alpha: 0.8)
                           : Theme.of(
                               context,
                             ).colorScheme.surfaceContainerHighest,
@@ -272,7 +272,7 @@ class _MilestoneCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: achieved
-                    ? (milestone['color'] as Color).withOpacity(0.2)
+                    ? (milestone['color'] as Color).withValues(alpha: 0.2)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),

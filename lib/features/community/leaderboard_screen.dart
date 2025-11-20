@@ -170,7 +170,7 @@ class _PodiumCard extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
+                Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
               ],
             ),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
@@ -268,3 +268,4 @@ class _LeaderboardCard extends StatelessWidget {
     );
   }
 }
+

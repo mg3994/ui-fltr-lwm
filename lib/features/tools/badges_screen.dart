@@ -224,7 +224,7 @@ class _BadgeCard extends StatelessWidget {
               height: 70,
               decoration: BoxDecoration(
                 color: unlocked
-                    ? (badge['color'] as Color).withOpacity(0.2)
+                    ? (badge['color'] as Color).withValues(alpha: 0.2)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -241,7 +241,7 @@ class _BadgeCard extends StatelessWidget {
                     ? badge['color'] as Color
                     : Theme.of(
                         context,
-                      ).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
               ),
             ),
             const Gap(16),
@@ -275,7 +275,7 @@ class _BadgeCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: _getRarityColor(
                             badge['rarity'] as String,
-                          ).withOpacity(0.1),
+                          ).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -354,3 +354,4 @@ class _BadgeCard extends StatelessWidget {
     }
   }
 }
+

@@ -142,7 +142,7 @@ class SavedItemsScreen extends HookWidget {
             leading: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: (resource['color'] as Color).withOpacity(0.1),
+                color: (resource['color'] as Color).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -207,3 +207,4 @@ class SavedItemsScreen extends HookWidget {
     );
   }
 }
+

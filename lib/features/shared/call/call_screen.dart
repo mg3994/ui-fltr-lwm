@@ -64,7 +64,7 @@ class CallScreen extends HookWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Row(
@@ -168,3 +168,4 @@ class CallScreen extends HookWidget {
     );
   }
 }
+

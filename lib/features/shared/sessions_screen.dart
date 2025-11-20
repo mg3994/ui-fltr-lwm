@@ -34,7 +34,7 @@ class SessionsScreen extends HookWidget {
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: kMockSessions.length,
-              separatorBuilder: (_, __) => const Gap(16),
+              separatorBuilder: (context, index) => const Gap(16),
               itemBuilder: (context, index) {
                 final session = kMockSessions[index];
                 // Filter based on tab
@@ -124,7 +124,7 @@ class SessionCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(

@@ -148,7 +148,7 @@ class _EventCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   height: 150,
-                  color: (event['color'] as Color).withOpacity(0.2),
+                  color: (event['color'] as Color).withValues(alpha: 0.2),
                   child: Center(
                     child: Icon(
                       Icons.event,
@@ -294,3 +294,4 @@ class _EventCard extends StatelessWidget {
     );
   }
 }
+

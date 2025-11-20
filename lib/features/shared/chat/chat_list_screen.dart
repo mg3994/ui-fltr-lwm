@@ -15,7 +15,8 @@ class ChatListScreen extends HookWidget {
       ),
       body: ListView.separated(
         itemCount: 5,
-        separatorBuilder: (_, __) => const Divider(height: 1, indent: 72),
+        separatorBuilder: (context, index) =>
+            const Divider(height: 1, indent: 72),
         itemBuilder: (context, index) {
           return ListTile(
             leading: Stack(

@@ -116,7 +116,7 @@ class _CareerPathCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: (path['color'] as Color).withOpacity(0.1),
+                      color: (path['color'] as Color).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -146,7 +146,7 @@ class _CareerPathCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: _getLevelColor(
                               path['level'] as String,
-                            ).withOpacity(0.1),
+                            ).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -274,3 +274,4 @@ class _InfoChip extends StatelessWidget {
     );
   }
 }
+

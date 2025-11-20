@@ -87,7 +87,7 @@ class WalletScreen extends HookWidget {
                   end: Alignment.bottomRight,
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -100,7 +100,7 @@ class WalletScreen extends HookWidget {
                     style: TextStyle(
                       color: Theme.of(
                         context,
-                      ).colorScheme.onPrimary.withOpacity(0.9),
+                      ).colorScheme.onPrimary.withValues(alpha: 0.9),
                       fontSize: 14,
                     ),
                   ),
@@ -121,7 +121,7 @@ class WalletScreen extends HookWidget {
                         size: 16,
                         color: Theme.of(
                           context,
-                        ).colorScheme.onPrimary.withOpacity(0.9),
+                        ).colorScheme.onPrimary.withValues(alpha: 0.9),
                       ),
                       const Gap(4),
                       Text(
@@ -129,7 +129,7 @@ class WalletScreen extends HookWidget {
                         style: TextStyle(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onPrimary.withOpacity(0.9),
+                          ).colorScheme.onPrimary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -272,8 +272,8 @@ class _TransactionCard extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isCredit
-                ? Colors.green.withOpacity(0.1)
-                : Colors.red.withOpacity(0.1),
+                ? Colors.green.withValues(alpha: 0.1)
+                : Colors.red.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -308,7 +308,7 @@ class _TransactionCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: Colors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(
@@ -337,3 +337,4 @@ class _TransactionCard extends StatelessWidget {
     );
   }
 }
+

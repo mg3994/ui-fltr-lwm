@@ -158,7 +158,7 @@ class _CertificationCard extends StatelessWidget {
                 height: 150,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (context, error, stackTrace) => Container(
                   height: 150,
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: const Icon(Icons.workspace_premium, size: 50),

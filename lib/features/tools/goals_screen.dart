@@ -174,7 +174,7 @@ class _GoalCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: (goal['color'] as Color).withOpacity(0.1),
+                    color: (goal['color'] as Color).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -234,3 +234,4 @@ class _GoalCard extends StatelessWidget {
     );
   }
 }
+

@@ -172,7 +172,7 @@ class _ProjectCard extends StatelessWidget {
             height: 150,
             width: double.infinity,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (context, error, stackTrace) => Container(
               height: 150,
               color: Colors.grey[300],
               child: const Icon(Icons.image, size: 50, color: Colors.grey),

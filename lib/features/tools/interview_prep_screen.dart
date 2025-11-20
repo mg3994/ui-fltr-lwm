@@ -200,7 +200,7 @@ class _CategoryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: (category['color'] as Color).withOpacity(0.1),
+                  color: (category['color'] as Color).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -272,7 +272,7 @@ class _QuestionCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _getDifficultyColor(difficulty).withOpacity(0.1),
+                      color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -344,3 +344,4 @@ class _QuestionCard extends StatelessWidget {
     }
   }
 }
+

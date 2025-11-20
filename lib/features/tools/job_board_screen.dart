@@ -8,6 +8,7 @@ class JobBoardScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedFilter = useState('All');
+    final searchController = useTextEditingController();
     final filters = ['All', 'Remote', 'Full-time', 'Part-time', 'Contract'];
 
     final jobs = [
@@ -82,21 +83,66 @@ class JobBoardScreen extends HookWidget {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search jobs, companies, or skills...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
+            ),
+          ),
           // Filters
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: filters.map((filter) {
                 final isSelected = selectedFilter.value == filter;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(filter),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      if (selected) selectedFilter.value = filter;
-                    },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    child: FilterChip(
+                      label: Text(filter),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) selectedFilter.value = filter;
+                      },
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      selectedColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      checkmarkColor: Theme.of(
+                        context,
+                      ).colorScheme.onPrimaryContainer,
+                      labelStyle: TextStyle(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.onSurface,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(
+                          color: isSelected
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
@@ -110,7 +156,21 @@ class JobBoardScreen extends HookWidget {
               itemCount: jobs.length,
               itemBuilder: (context, index) {
                 final job = jobs[index];
-                return _JobCard(job: job);
+                return TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: Duration(milliseconds: 400 + (index * 100)),
+                  curve: Curves.easeOut,
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: _JobCard(job: job),
+                );
               },
             ),
           ),
@@ -129,9 +189,14 @@ class _JobCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
       child: InkWell(
         onTap: () {},
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -139,9 +204,18 @@ class _JobCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundImage: NetworkImage(job['logo'] as String),
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 26,
+                      backgroundImage: NetworkImage(job['logo'] as String),
+                    ),
                   ),
                   const Gap(12),
                   Expanded(
@@ -179,11 +253,14 @@ class _JobCard extends StatelessWidget {
               Row(
                 children: [
                   _InfoChip(
-                    icon: Icons.location_on,
+                    icon: Icons.location_on_outlined,
                     label: job['location'] as String,
                   ),
                   const Gap(12),
-                  _InfoChip(icon: Icons.work, label: job['type'] as String),
+                  _InfoChip(
+                    icon: Icons.work_outline,
+                    label: job['type'] as String,
+                  ),
                 ],
               ),
               const Gap(8),
@@ -195,7 +272,7 @@ class _JobCard extends StatelessWidget {
                   ),
                   const Gap(12),
                   _InfoChip(
-                    icon: Icons.people,
+                    icon: Icons.people_outline,
                     label: '${job['applicants']} applicants',
                   ),
                 ],
@@ -214,7 +291,7 @@ class _JobCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: (job['color'] as Color).withOpacity(0.1),
+                      color: (job['color'] as Color).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
@@ -244,6 +321,11 @@ class _JobCard extends StatelessWidget {
                   ),
                   FilledButton(
                     onPressed: () {},
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: const Text('Apply Now'),
                   ),
                 ],

@@ -174,7 +174,7 @@ class _AssessmentCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: (assessment['color'] as Color).withOpacity(0.1),
+                    color: (assessment['color'] as Color).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -215,7 +215,7 @@ class _AssessmentCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: _getScoreColor(
                         assessment['score'] as int,
-                      ).withOpacity(0.1),
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -285,3 +285,4 @@ class _AssessmentCard extends StatelessWidget {
     return Colors.red;
   }
 }
+

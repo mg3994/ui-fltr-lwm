@@ -163,7 +163,7 @@ class _AchievementCard extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 color: unlocked
-                    ? (achievement['color'] as Color).withOpacity(0.2)
+                    ? (achievement['color'] as Color).withValues(alpha: 0.2)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -174,7 +174,7 @@ class _AchievementCard extends StatelessWidget {
                     ? achievement['color'] as Color
                     : Theme.of(
                         context,
-                      ).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
               ),
             ),
             const Gap(16),
@@ -244,3 +244,4 @@ class _AchievementCard extends StatelessWidget {
     );
   }
 }
+
