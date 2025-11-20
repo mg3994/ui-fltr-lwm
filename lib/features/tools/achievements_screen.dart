@@ -51,25 +51,25 @@ class AchievementsScreen extends HookWidget {
       },
       {
         'id': 5,
-        'title': 'Knowledge Sharer',
-        'description': 'Answer 20 community questions',
-        'icon': Icons.forum,
-        'color': Colors.green,
+        'title': 'Night Owl',
+        'description': 'Complete 5 sessions after 8 PM',
+        'icon': Icons.nightlight,
+        'color': Colors.indigo,
         'unlocked': false,
-        'progress': 0.35,
-        'current': 7,
-        'total': 20,
+        'progress': 0.4,
+        'current': 2,
+        'total': 5,
       },
       {
         'id': 6,
-        'title': 'Marathon Mentor',
-        'description': 'Complete 50 sessions',
-        'icon': Icons.emoji_events,
-        'color': Colors.red,
+        'title': 'Community Helper',
+        'description': 'Answer 25 forum questions',
+        'icon': Icons.help_outline,
+        'color': Colors.green,
         'unlocked': false,
-        'progress': 0.48,
-        'current': 24,
-        'total': 50,
+        'progress': 0.32,
+        'current': 8,
+        'total': 25,
       },
     ];
 
@@ -77,6 +77,7 @@ class AchievementsScreen extends HookWidget {
         .where((a) => a['unlocked'] == true)
         .length;
     final totalCount = achievements.length;
+    final overallProgress = unlockedCount / totalCount;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Achievements')),
@@ -84,57 +85,147 @@ class AchievementsScreen extends HookWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Progress Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Your Progress',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '$unlockedCount / $totalCount',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: 0.95 + (0.05 * value),
+                child: Opacity(opacity: value, child: child),
+              );
+            },
+            child: Card(
+              elevation: 4,
+              shadowColor: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primaryContainer,
+                      Theme.of(context).colorScheme.secondaryContainer,
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  const Gap(16),
-                  LinearProgressIndicator(
-                    value: unlockedCount / totalCount,
-                    minHeight: 10,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  const Gap(8),
-                  Text(
-                    '${((unlockedCount / totalCount) * 100).toInt()}% Complete',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.emoji_events,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 32,
+                          ),
+                        ),
+                        const Gap(20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Achievement Progress',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Gap(8),
+                              Text(
+                                '$unlockedCount of $totalCount unlocked',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const Gap(20),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: overallProgress),
+                      duration: const Duration(milliseconds: 1200),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) {
+                        return Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: value,
+                                minHeight: 12,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                            const Gap(12),
+                            Text(
+                              '${(value * 100).toInt()}% Complete',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
 
-          const Gap(24),
+          const Gap(32),
+
+          const Text(
+            'All Achievements',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const Gap(16),
 
           // Achievements List
-          ...achievements.map((achievement) {
-            final unlocked = achievement['unlocked'] as bool;
-            return _AchievementCard(
-              achievement: achievement,
-              unlocked: unlocked,
+          ...achievements.asMap().entries.map((entry) {
+            final index = entry.key;
+            final achievement = entry.value;
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: Duration(milliseconds: 400 + (index * 100)),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: _AchievementCard(achievement: achievement),
             );
           }),
         ],
@@ -145,41 +236,84 @@ class AchievementsScreen extends HookWidget {
 
 class _AchievementCard extends StatelessWidget {
   final Map<String, dynamic> achievement;
-  final bool unlocked;
 
-  const _AchievementCard({required this.achievement, required this.unlocked});
+  const _AchievementCard({required this.achievement});
 
   @override
   Widget build(BuildContext context) {
+    final unlocked = achievement['unlocked'] as bool;
+    final progress = achievement['progress'] as double;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      elevation: unlocked ? 2 : 0,
+      shadowColor: unlocked
+          ? (achievement['color'] as Color).withValues(alpha: 0.3)
+          : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: unlocked
+              ? (achievement['color'] as Color).withValues(alpha: 0.3)
+              : Theme.of(context).colorScheme.outlineVariant,
+          width: unlocked ? 2 : 1,
+        ),
+      ),
+      child: Container(
+        decoration: unlocked
+            ? BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.surface,
+                    (achievement['color'] as Color).withValues(alpha: 0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              )
+            : null,
+        padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            // Icon
+            // Achievement Icon
             Container(
-              width: 60,
-              height: 60,
+              width: 70,
+              height: 70,
               decoration: BoxDecoration(
                 color: unlocked
-                    ? (achievement['color'] as Color).withValues(alpha: 0.2)
+                    ? (achievement['color'] as Color).withValues(alpha: 0.15)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(12),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: unlocked
+                      ? achievement['color'] as Color
+                      : Theme.of(context).colorScheme.outlineVariant,
+                  width: 3,
+                ),
+                boxShadow: unlocked
+                    ? [
+                        BoxShadow(
+                          color: (achievement['color'] as Color).withValues(
+                            alpha: 0.3,
+                          ),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                    : null,
               ),
               child: Icon(
                 achievement['icon'] as IconData,
                 size: 32,
                 color: unlocked
                     ? achievement['color'] as Color
-                    : Theme.of(
-                        context,
-                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const Gap(16),
 
-            // Details
+            // Achievement Details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,52 +321,87 @@ class _AchievementCard extends StatelessWidget {
                   Text(
                     achievement['title'] as String,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
                       color: unlocked
                           ? null
                           : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const Gap(4),
+                  const Gap(6),
                   Text(
                     achievement['description'] as String,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 13,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  if (!unlocked) ...[
-                    const Gap(12),
-                    LinearProgressIndicator(
-                      value: achievement['progress'] as double,
-                      minHeight: 6,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    const Gap(4),
-                    Text(
-                      '${achievement['current']} / ${achievement['total']}',
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ] else ...[
-                    const Gap(8),
+                  if (unlocked) ...[
+                    const Gap(10),
                     Row(
                       children: [
                         Icon(
                           Icons.check_circle,
-                          size: 16,
+                          size: 14,
                           color: achievement['color'] as Color,
                         ),
-                        const Gap(4),
+                        const Gap(6),
                         Text(
                           'Unlocked on ${achievement['date']}',
                           style: TextStyle(
                             fontSize: 11,
                             color: achievement['color'] as Color,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
+                    ),
+                  ] else ...[
+                    const Gap(12),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: progress),
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) {
+                        return Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: value,
+                                minHeight: 6,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  achievement['color'] as Color,
+                                ),
+                              ),
+                            ),
+                            const Gap(6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${achievement['current']} / ${achievement['total']}',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  '${(value * 100).toInt()}%',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: achievement['color'] as Color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ],
@@ -244,4 +413,3 @@ class _AchievementCard extends StatelessWidget {
     );
   }
 }
-
