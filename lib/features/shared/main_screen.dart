@@ -77,6 +77,8 @@ import 'package:linkwithmentor/features/tools/peer_feedback_review_screen.dart';
 import 'package:linkwithmentor/features/tools/time_tracking_productivity_screen.dart';
 import 'package:linkwithmentor/features/tools/one_on_one_sessions_screen.dart';
 import 'package:linkwithmentor/features/tools/skill_endorsements_screen.dart';
+import 'package:linkwithmentor/features/tools/mentorship_goals_milestones_screen.dart';
+import 'package:linkwithmentor/features/tools/networking_events_workshops_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -375,6 +377,18 @@ class MainScreen extends HookWidget {
               'Skill Endorsements',
               Icons.verified,
               const SkillEndorsementsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Goals & Milestones',
+              Icons.flag,
+              const MentorshipGoalsMilestonesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Events & Workshops',
+              Icons.event,
+              const NetworkingEventsWorkshopsScreen(),
             ),
             const Divider(),
             const Padding(
