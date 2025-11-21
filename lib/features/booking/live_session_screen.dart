@@ -1,95 +1,222 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
+import 'package:linkwithmentor/core/services/webrtc_service.dart';
 
 class LiveSessionScreen extends HookWidget {
   const LiveSessionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localRenderer = useMemoized(() => RTCVideoRenderer());
+    final remoteRenderer = useMemoized(() => RTCVideoRenderer());
+    final isMicOn = useState(true);
+    final isCameraOn = useState(true);
     final isConnected = useState(false);
-    final participants = useState<List<Map<String, String>>>([
-      {'name': 'You', 'avatar': 'https://i.pravatar.cc/100?u=you'},
-      {'name': 'Sarah Jenkins', 'avatar': 'https://i.pravatar.cc/100?u=1'},
-      {'name': 'David Chen', 'avatar': 'https://i.pravatar.cc/100?u=2'},
-    ]);
+
+    useEffect(() {
+      Future<void> initRenderers() async {
+        await localRenderer.initialize();
+        await remoteRenderer.initialize();
+
+        webRTCService.onLocalStream.listen((stream) {
+          localRenderer.srcObject = stream;
+        });
+
+        webRTCService.onRemoteStream.listen((stream) {
+          remoteRenderer.srcObject = stream;
+          isConnected.value = true;
+        });
+
+        await webRTCService.initialize();
+        await webRTCService.startCall();
+      }
+
+      initRenderers();
+
+      return () {
+        localRenderer.dispose();
+        remoteRenderer.dispose();
+        webRTCService.hangUp();
+      };
+    }, []);
 
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Video placeholder (would be replaced by WebRTC view)
-          Container(
-            color: Colors.black,
-            child: Center(
-              child: Icon(Icons.videocam, color: Colors.white54, size: 80),
-            ),
+          // Remote Video (Full Screen)
+          Positioned.fill(
+            child: isConnected.value
+                ? RTCVideoView(
+                    remoteRenderer,
+                    objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
           ),
-          // Top bar
+
+          // Local Video (Picture in Picture)
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
+            right: 16,
+            top: 60,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              width: 120,
+              height: 160,
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.surface.withValues(alpha: 0.8),
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).shadowColor.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 10,
                   ),
                 ],
               ),
-              child: Row(
-                children: [
-                  Text(
-                    'Live Session',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      isConnected.value ? Icons.call_end : Icons.call,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onPressed: () => isConnected.value = !isConnected.value,
-                  ),
-                ],
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: RTCVideoView(
+                  localRenderer,
+                  mirror: true,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                ),
               ),
             ),
           ),
-          // Participants avatars at bottom
+
+          // Controls
           Positioned(
-            bottom: 20,
+            bottom: 40,
             left: 0,
             right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: participants.value.map((p) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundImage: NetworkImage(p['avatar']!),
+              children: [
+                _ControlBtn(
+                  icon: isMicOn.value ? Icons.mic : Icons.mic_off,
+                  isActive: isMicOn.value,
+                  onTap: () {
+                    webRTCService.toggleMic();
+                    isMicOn.value = !isMicOn.value;
+                  },
+                ),
+                const Gap(24),
+                _ControlBtn(
+                  icon: Icons.call_end,
+                  isActive: false,
+                  color: Colors.red,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  size: 72,
+                ),
+                const Gap(24),
+                _ControlBtn(
+                  icon: isCameraOn.value ? Icons.videocam : Icons.videocam_off,
+                  isActive: isCameraOn.value,
+                  onTap: () {
+                    webRTCService.toggleCamera();
+                    isCameraOn.value = !isCameraOn.value;
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          // Header Info
+          Positioned(
+            top: 60,
+            left: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
                   ),
-                );
-              }).toList(),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const Gap(8),
+                      const Text(
+                        'LIVE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(8),
+                const Text(
+                  'Mentorship Session',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    shadows: [Shadow(color: Colors.black, blurRadius: 4)],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        icon: const Icon(Icons.chat),
-        label: const Text('Open Chat'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+    );
+  }
+}
+
+class _ControlBtn extends StatelessWidget {
+  final IconData icon;
+  final bool isActive;
+  final VoidCallback onTap;
+  final Color? color;
+  final double size;
+
+  const _ControlBtn({
+    required this.icon,
+    required this.isActive,
+    required this.onTap,
+    this.color,
+    this.size = 56,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color:
+              color ??
+              (isActive ? Colors.white : Colors.white.withValues(alpha: 0.3)),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: color != null
+              ? Colors.white
+              : (isActive ? Colors.black : Colors.white),
+          size: size * 0.5,
+        ),
       ),
     );
   }

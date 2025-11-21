@@ -27,6 +27,16 @@ import 'package:linkwithmentor/features/community/study_groups_screen.dart';
 import 'package:linkwithmentor/features/community/events_screen.dart';
 import 'package:linkwithmentor/features/community/resources_screen.dart';
 import 'package:linkwithmentor/features/community/leaderboard_screen.dart';
+import 'package:linkwithmentor/features/tools/learning_path_screen.dart';
+import 'package:linkwithmentor/features/tools/mentorship_goals_screen.dart';
+import 'package:linkwithmentor/features/tools/progress_tracker_screen.dart';
+import 'package:linkwithmentor/features/tools/challenges_screen.dart';
+import 'package:linkwithmentor/features/community/community_insights_screen.dart';
+import 'package:linkwithmentor/features/community/community_polls_screen.dart';
+import 'package:linkwithmentor/features/community/mentor_spotlight_screen.dart';
+import 'package:linkwithmentor/features/community/networking_events_screen.dart';
+import 'package:linkwithmentor/features/community/skill_exchange_screen.dart';
+import 'package:linkwithmentor/features/community/success_stories_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -164,6 +174,24 @@ class MainScreen extends HookWidget {
               Icons.people_outline,
               const ReferralScreen(),
             ),
+            _buildDrawerItem(
+              context,
+              'Learning Paths',
+              Icons.school,
+              const LearningPathScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Mentorship Goals',
+              Icons.track_changes,
+              const MentorshipGoalsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Progress Tracker',
+              Icons.bar_chart,
+              const ProgressTrackerScreen(),
+            ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(16.0),
@@ -189,6 +217,12 @@ class MainScreen extends HookWidget {
               'Achievements',
               Icons.emoji_events,
               const AchievementsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Challenges',
+              Icons.sports_score,
+              const ChallengesScreen(),
             ),
             const Divider(),
             const Padding(
@@ -227,6 +261,42 @@ class MainScreen extends HookWidget {
               'Leaderboard',
               Icons.leaderboard,
               const LeaderboardScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Community Insights',
+              Icons.insights,
+              const CommunityInsightsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Polls',
+              Icons.poll,
+              const CommunityPollsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Mentor Spotlight',
+              Icons.star_border,
+              const MentorSpotlightScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Networking Events',
+              Icons.connect_without_contact,
+              const NetworkingEventsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Skill Exchange',
+              Icons.swap_horiz,
+              const SkillExchangeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Success Stories',
+              Icons.auto_awesome,
+              const SuccessStoriesScreen(),
             ),
           ],
         ),

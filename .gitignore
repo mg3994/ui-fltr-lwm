@@ -35,6 +35,7 @@ migrate_working_dir/
 
 # Symbolication related
 app.*.symbols
+mcp_config.json
 
 # Obfuscation related
 app.*.map.json

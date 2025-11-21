@@ -91,6 +91,15 @@ class NotificationsScreen extends HookWidget {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
                         '$unreadCount',
@@ -121,13 +130,17 @@ class NotificationsScreen extends HookWidget {
             ),
             actions: [
               if (unreadCount > 0)
-                TextButton(
+                TextButton.icon(
                   onPressed: () {
                     notifications.value = notifications.value.map((n) {
                       return {...n, 'read': true};
                     }).toList();
                   },
-                  child: const Text('Mark all read'),
+                  icon: const Icon(Icons.done_all, size: 18),
+                  label: const Text('Mark all read'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               const Gap(8),
             ],
@@ -138,16 +151,35 @@ class NotificationsScreen extends HookWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.notifications_off_outlined,
-                          size: 64,
-                          color: Theme.of(context).colorScheme.outline,
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.3),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.notifications_off_outlined,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
-                        const Gap(16),
+                        const Gap(24),
                         Text(
                           'No notifications',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        const Gap(8),
+                        Text(
+                          'You\'re all caught up!',
+                          style: TextStyle(
+                            fontSize: 14,
                             color: Theme.of(
                               context,
                             ).colorScheme.onSurfaceVariant,
@@ -170,14 +202,15 @@ class NotificationsScreen extends HookWidget {
                           key: Key(n['id'] as String),
                           background: Container(
                             decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.red.withValues(alpha: 0.9),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.only(right: 20),
                             child: const Icon(
-                              Icons.delete,
+                              Icons.delete_outline,
                               color: Colors.white,
+                              size: 28,
                             ),
                           ),
                           direction: DismissDirection.endToStart,
@@ -188,6 +221,10 @@ class NotificationsScreen extends HookWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text('Notification dismissed'),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 action: SnackBarAction(
                                   label: 'Undo',
                                   onPressed: () {
@@ -203,9 +240,9 @@ class NotificationsScreen extends HookWidget {
                                   ? Theme.of(context).colorScheme.surface
                                   : Theme.of(context)
                                         .colorScheme
-                                        .primaryContainer
-                                        .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(16),
+                                        .surfaceContainerHighest
+                                        .withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: isRead
                                     ? Theme.of(context)
@@ -213,115 +250,127 @@ class NotificationsScreen extends HookWidget {
                                           .outlineVariant
                                           .withValues(alpha: 0.5)
                                     : Theme.of(context).colorScheme.primary
-                                          .withValues(alpha: 0.3),
-                                width: isRead ? 1 : 2,
+                                          .withValues(alpha: 0.2),
+                                width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Theme.of(context).shadowColor
-                                      .withValues(alpha: isRead ? 0.05 : 0.1),
+                                  color: Theme.of(
+                                    context,
+                                  ).shadowColor.withValues(alpha: 0.05),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(16),
-                              leading: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: (n['color'] as Color).withValues(
-                                    alpha: 0.15,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  n['icon'] as IconData,
-                                  color: n['color'] as Color,
-                                  size: 24,
-                                ),
-                              ),
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      n['title'] as String,
-                                      style: TextStyle(
-                                        fontWeight: isRead
-                                            ? FontWeight.w600
-                                            : FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  if (!isRead)
-                                    Container(
-                                      width: 10,
-                                      height: 10,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withValues(alpha: 0.5),
-                                            blurRadius: 4,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Gap(6),
-                                  Text(
-                                    n['body'] as String,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      height: 1.4,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  const Gap(8),
-                                  Row(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () {
+                                  // Mark as read on tap
+                                  final updatedList = [...notifications.value];
+                                  updatedList[index] = {...n, 'read': true};
+                                  notifications.value = updatedList;
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        size: 12,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurfaceVariant,
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: (n['color'] as Color)
+                                              .withValues(alpha: 0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          n['icon'] as IconData,
+                                          color: n['color'] as Color,
+                                          size: 24,
+                                        ),
                                       ),
-                                      const Gap(4),
-                                      Text(
-                                        n['time'] as String,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.onSurfaceVariant,
+                                      const Gap(16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    n['title'] as String,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: isRead
+                                                          ? FontWeight.w600
+                                                          : FontWeight.bold,
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSurface,
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (!isRead)
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.primary,
+                                                      shape: BoxShape.circle,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary
+                                                                  .withValues(
+                                                                    alpha: 0.4,
+                                                                  ),
+                                                          blurRadius: 4,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                            const Gap(4),
+                                            Text(
+                                              n['body'] as String,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                height: 1.4,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const Gap(8),
+                                            Text(
+                                              n['time'] as String,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.outline,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                              onTap: () {
-                                // Mark as read on tap
-                                final updatedList = [...notifications.value];
-                                updatedList[index] = {...n, 'read': true};
-                                notifications.value = updatedList;
-                              },
                             ),
                           ),
                         ),

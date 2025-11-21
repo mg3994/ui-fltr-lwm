@@ -132,6 +132,13 @@ class MentorSpotlightScreen extends HookWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 4),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: CircleAvatar(
                             radius: 40,
@@ -151,6 +158,13 @@ class MentorSpotlightScreen extends HookWidget {
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black45,
+                                      offset: Offset(0, 2),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
                                 ),
                               ),
                               const Gap(4),
@@ -159,6 +173,7 @@ class MentorSpotlightScreen extends HookWidget {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.white70,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
@@ -171,10 +186,19 @@ class MentorSpotlightScreen extends HookWidget {
               ),
             ),
             actions: [
-              IconButton(icon: const Icon(Icons.share), onPressed: () {}),
               IconButton(
-                icon: const Icon(Icons.favorite_border),
+                icon: const Icon(Icons.share, color: Colors.white),
                 onPressed: () {},
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.3),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite_border, color: Colors.white),
+                onPressed: () {},
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.3),
+                ),
               ),
             ],
           ),
@@ -268,6 +292,15 @@ class MentorSpotlightScreen extends HookWidget {
                             context,
                           ).colorScheme.primary.withValues(alpha: 0.3),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
                         skill,
@@ -301,33 +334,42 @@ class MentorSpotlightScreen extends HookWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: Theme.of(
                           context,
                         ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(
+                            context,
+                          ).shadowColor.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.amber.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.amber.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
                             Icons.emoji_events,
                             color: Colors.amber,
-                            size: 20,
+                            size: 24,
                           ),
                         ),
-                        const Gap(12),
+                        const Gap(16),
                         Expanded(
                           child: Text(
                             achievement,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -350,15 +392,24 @@ class MentorSpotlightScreen extends HookWidget {
                 ),
                 const Gap(12),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: Theme.of(
                         context,
                       ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).shadowColor.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
@@ -368,19 +419,19 @@ class MentorSpotlightScreen extends HookWidget {
                         value: mentor['availability'] as String,
                         valueColor: Colors.green,
                       ),
-                      const Gap(12),
+                      const Gap(16),
                       _DetailRow(
                         icon: Icons.access_time,
                         label: 'Response Time',
                         value: mentor['responseTime'] as String,
                       ),
-                      const Gap(12),
+                      const Gap(16),
                       _DetailRow(
                         icon: Icons.language,
                         label: 'Languages',
                         value: (mentor['languages'] as List<String>).join(', '),
                       ),
-                      const Gap(12),
+                      const Gap(16),
                       _DetailRow(
                         icon: Icons.public,
                         label: 'Timezone',
@@ -397,7 +448,8 @@ class MentorSpotlightScreen extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     spotlightMentors.length,
-                    (index) => Container(
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       width: currentIndex.value == index ? 24 : 8,
                       height: 8,
@@ -535,13 +587,27 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 24),
-          const Gap(8),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const Gap(12),
           Text(
             value,
             style: TextStyle(
@@ -554,8 +620,9 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
             maxLines: 1,
@@ -584,8 +651,21 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
-        const Gap(12),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(
+              context,
+            ).colorScheme.primaryContainer.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            size: 20,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        const Gap(16),
         Text(
           '$label:',
           style: TextStyle(

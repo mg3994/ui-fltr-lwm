@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:linkwithmentor/features/shared/call/call_screen.dart';
+import 'package:linkwithmentor/features/booking/live_session_screen.dart';
 
 class ChatScreen extends HookWidget {
   final String userName;
@@ -87,9 +87,26 @@ class ChatScreen extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         title: Row(
           children: [
-            CircleAvatar(backgroundImage: NetworkImage(userImage), radius: 20),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.2),
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(userImage),
+                radius: 20,
+              ),
+            ),
             const Gap(12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,9 +128,22 @@ class ChatScreen extends HookWidget {
                     ),
                   )
                 else
-                  const Text(
-                    'Online',
-                    style: TextStyle(fontSize: 12, color: Colors.green),
+                  Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const Gap(4),
+                      const Text(
+                        'Online',
+                        style: TextStyle(fontSize: 12, color: Colors.green),
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -122,132 +152,202 @@ class ChatScreen extends HookWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.videocam_outlined),
+            style: IconButton.styleFrom(
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      CallScreen(userName: userName, userImage: userImage),
+                  builder: (context) => const LiveSessionScreen(),
                 ),
               );
             },
           ),
-          IconButton(icon: const Icon(Icons.phone_outlined), onPressed: () {}),
+          const Gap(8),
+          IconButton(
+            icon: const Icon(Icons.phone_outlined),
+            style: IconButton.styleFrom(
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            onPressed: () {},
+          ),
+          const Gap(8),
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+          const Gap(8),
         ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.all(16),
-              reverse: true,
-              itemCount: messages.value.length,
-              itemBuilder: (context, index) {
-                final message =
-                    messages.value[messages.value.length - 1 - index];
-                final isMe = message['isMe'] == true;
-                final showDate = index == messages.value.length - 1;
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                image: DecorationImage(
+                  image: const NetworkImage(
+                    'https://www.transparenttextures.com/patterns/subtle-white-feathers.png',
+                  ), // Subtle pattern
+                  opacity: 0.05,
+                  repeat: ImageRepeat.repeat,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.all(16),
+                reverse: true,
+                itemCount: messages.value.length,
+                itemBuilder: (context, index) {
+                  final message =
+                      messages.value[messages.value.length - 1 - index];
+                  final isMe = message['isMe'] == true;
+                  final showDate = index == messages.value.length - 1;
 
-                return Column(
-                  children: [
-                    if (showDate)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Text(
-                          'Today',
-                          style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    Align(
-                      alignment: isMe
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.75,
-                        ),
-                        margin: const EdgeInsets.only(bottom: 8),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isMe
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(16).copyWith(
-                            bottomRight: isMe ? const Radius.circular(0) : null,
-                            bottomLeft: !isMe ? const Radius.circular(0) : null,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 5,
-                              offset: const Offset(0, 2),
+                  return Column(
+                    children: [
+                      if (showDate)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              message['text'] as String,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHighest
+                                  .withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Today',
                               style: TextStyle(
-                                color: isMe
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                fontSize: 16,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const Gap(4),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  DateFormat(
-                                    'h:mm a',
-                                  ).format(message['time'] as DateTime),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: isMe
-                                        ? Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary
-                                              .withValues(alpha: 0.7)
-                                        : Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant
-                                              .withValues(alpha: 0.7),
-                                  ),
-                                ),
-                                if (isMe) ...[
-                                  const Gap(4),
-                                  Icon(
-                                    Icons.done_all,
-                                    size: 14,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                ],
-                              ],
+                          ),
+                        ),
+                      Align(
+                        alignment: isMe
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.75,
+                          ),
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            gradient: isMe
+                                ? LinearGradient(
+                                    colors: [
+                                      Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.8),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  )
+                                : null,
+                            color: isMe
+                                ? null
+                                : Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest
+                                      .withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(20).copyWith(
+                              bottomRight: isMe
+                                  ? const Radius.circular(0)
+                                  : null,
+                              bottomLeft: !isMe
+                                  ? const Radius.circular(0)
+                                  : null,
                             ),
-                          ],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            border: !isMe
+                                ? Border.all(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outlineVariant
+                                        .withValues(alpha: 0.3),
+                                  )
+                                : null,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                message['text'] as String,
+                                style: TextStyle(
+                                  color: isMe
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const Gap(4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    DateFormat(
+                                      'h:mm a',
+                                    ).format(message['time'] as DateTime),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isMe
+                                          ? Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary
+                                                .withValues(alpha: 0.7)
+                                          : Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant
+                                                .withValues(alpha: 0.7),
+                                    ),
+                                  ),
+                                  if (isMe) ...[
+                                    const Gap(4),
+                                    Icon(
+                                      Icons.done_all,
+                                      size: 14,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ),
           _buildMessageInput(context, messageController, sendMessage),
@@ -287,8 +387,15 @@ class ChatScreen extends HookWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: TextField(
                   controller: controller,
@@ -304,6 +411,12 @@ class ChatScreen extends HookWidget {
             IconButton.filled(
               icon: const Icon(Icons.send_rounded),
               onPressed: onSend,
+              style: IconButton.styleFrom(
+                elevation: 2,
+                shadowColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.4),
+              ),
             ),
           ],
         ),
@@ -314,11 +427,25 @@ class ChatScreen extends HookWidget {
   void _showAttachmentSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const Gap(24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -366,6 +493,7 @@ class ChatScreen extends HookWidget {
                 ),
               ],
             ),
+            const Gap(24),
           ],
         ),
       ),
@@ -402,7 +530,10 @@ class _AttachmentOption extends StatelessWidget {
             child: Icon(icon, color: color, size: 28),
           ),
           const Gap(8),
-          Text(label, style: const TextStyle(fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          ),
         ],
       ),
     );

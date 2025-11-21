@@ -261,7 +261,6 @@ class _PollCard extends StatelessWidget {
             if (isActive)
               FilledButton(
                 onPressed: () {},
-                child: const Text('Vote Now'),
                 style: FilledButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -269,6 +268,7 @@ class _PollCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                child: const Text('Vote Now'),
               ),
           ],
         ),

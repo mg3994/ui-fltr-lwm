@@ -7,10 +7,11 @@ class BadgesScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final badges = [
+    // Sample badge data – replace with real API later
+    final badges = useState<List<Map<String, dynamic>>>([
       {
         'name': 'Early Adopter',
-        'description': 'Joined LinkWithMentor in the first month',
+        'description': 'Joined in the first month',
         'icon': Icons.rocket_launch,
         'color': Colors.purple,
         'unlocked': true,
@@ -19,79 +20,19 @@ class BadgesScreen extends HookWidget {
       },
       {
         'name': 'Session Master',
-        'description': 'Completed 100 mentoring sessions',
+        'description': 'Completed 100 sessions',
         'icon': Icons.video_call,
         'color': Colors.blue,
-        'unlocked': true,
-        'rarity': 'Epic',
-        'date': 'Feb 15, 2024',
-      },
-      {
-        'name': 'Knowledge Guru',
-        'description': 'Answered 50 community questions',
-        'icon': Icons.school,
-        'color': Colors.green,
-        'unlocked': true,
-        'rarity': 'Rare',
-        'date': 'Jan 28, 2024',
-      },
-      {
-        'name': 'Perfect Rating',
-        'description': 'Maintained 5.0 rating for 3 months',
-        'icon': Icons.star,
-        'color': Colors.amber,
-        'unlocked': true,
-        'rarity': 'Epic',
-        'date': 'Mar 1, 2024',
-      },
-      {
-        'name': 'Community Leader',
-        'description': 'Create and manage 3 study groups',
-        'icon': Icons.groups,
-        'color': Colors.orange,
         'unlocked': false,
-        'rarity': 'Rare',
+        'rarity': 'Epic',
         'progress': 0.66,
-        'current': 2,
-        'total': 3,
+        'current': 66,
+        'total': 100,
       },
-      {
-        'name': 'Referral Champion',
-        'description': 'Refer 10 new users',
-        'icon': Icons.people_alt,
-        'color': Colors.pink,
-        'unlocked': false,
-        'rarity': 'Common',
-        'progress': 0.3,
-        'current': 3,
-        'total': 10,
-      },
-      {
-        'name': 'Streak Legend',
-        'description': 'Maintain 30-day activity streak',
-        'icon': Icons.local_fire_department,
-        'color': Colors.red,
-        'unlocked': false,
-        'rarity': 'Epic',
-        'progress': 0.23,
-        'current': 7,
-        'total': 30,
-      },
-      {
-        'name': 'Skill Collector',
-        'description': 'Complete assessments in 5 different skills',
-        'icon': Icons.collections_bookmark,
-        'color': Colors.teal,
-        'unlocked': false,
-        'rarity': 'Rare',
-        'progress': 0.6,
-        'current': 3,
-        'total': 5,
-      },
-    ];
+    ]);
 
-    final unlockedBadges = badges.where((b) => b['unlocked'] == true).toList();
-    final lockedBadges = badges.where((b) => b['unlocked'] == false).toList();
+    final unlocked = badges.value.where((b) => b['unlocked'] == true).toList();
+    final locked = badges.value.where((b) => b['unlocked'] == false).toList();
 
     return Scaffold(
       body: CustomScrollView(
@@ -168,8 +109,8 @@ class BadgesScreen extends HookWidget {
                       children: [
                         _StatColumn(
                           label: 'Unlocked',
-                          value: '${unlockedBadges.length}',
-                          icon: Icons.verified,
+                          value: '${unlocked.length}',
+                          icon: Icons.check_circle,
                           color: Colors.green,
                         ),
                         Container(
@@ -178,9 +119,9 @@ class BadgesScreen extends HookWidget {
                           color: Theme.of(context).colorScheme.outlineVariant,
                         ),
                         _StatColumn(
-                          label: 'In Progress',
-                          value: '${lockedBadges.length}',
-                          icon: Icons.hourglass_empty,
+                          label: 'Locked',
+                          value: '${locked.length}',
+                          icon: Icons.lock,
                           color: Colors.orange,
                         ),
                         Container(
@@ -190,7 +131,7 @@ class BadgesScreen extends HookWidget {
                         ),
                         _StatColumn(
                           label: 'Total',
-                          value: '${badges.length}',
+                          value: '${badges.value.length}',
                           icon: Icons.emoji_events,
                           color: Colors.blue,
                         ),
@@ -198,61 +139,51 @@ class BadgesScreen extends HookWidget {
                     ),
                   ),
                 ),
-
                 const Gap(32),
-
                 // Unlocked Badges
                 const Text(
                   'Unlocked Badges',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Gap(16),
-
-                ...unlockedBadges.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final badge = entry.value;
+                ...unlocked.asMap().entries.map((e) {
+                  final idx = e.key;
+                  final badge = e.value;
                   return TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),
-                    duration: Duration(milliseconds: 400 + (index * 100)),
+                    duration: Duration(milliseconds: 400 + idx * 100),
                     curve: Curves.easeOut,
-                    builder: (context, value, child) {
-                      return Opacity(
-                        opacity: value,
-                        child: Transform.translate(
-                          offset: Offset(0, 20 * (1 - value)),
-                          child: child,
-                        ),
-                      );
-                    },
+                    builder: (c, v, child) => Opacity(
+                      opacity: v,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - v)),
+                        child: child,
+                      ),
+                    ),
                     child: _BadgeCard(badge: badge, unlocked: true),
                   );
                 }),
-
                 const Gap(32),
-
                 // Locked Badges
                 const Text(
-                  'In Progress',
+                  'Locked Badges',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Gap(16),
-
-                ...lockedBadges.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final badge = entry.value;
+                ...locked.asMap().entries.map((e) {
+                  final idx = e.key;
+                  final badge = e.value;
                   return TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),
-                    duration: Duration(milliseconds: 600 + (index * 100)),
+                    duration: Duration(milliseconds: 600 + idx * 100),
                     curve: Curves.easeOut,
-                    builder: (context, value, child) {
-                      return Opacity(
-                        opacity: value,
-                        child: Transform.translate(
-                          offset: Offset(0, 20 * (1 - value)),
-                          child: child,
-                        ),
-                      );
-                    },
+                    builder: (c, v, child) => Opacity(
+                      opacity: v,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - v)),
+                        child: child,
+                      ),
+                    ),
                     child: _BadgeCard(badge: badge, unlocked: false),
                   );
                 }),
@@ -271,14 +202,12 @@ class _StatColumn extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
-
   const _StatColumn({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
   });
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -296,12 +225,10 @@ class _StatColumn extends StatelessWidget {
           value,
           style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
-        const Gap(4),
         Text(
           label,
           style: TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
@@ -313,11 +240,10 @@ class _StatColumn extends StatelessWidget {
 class _BadgeCard extends StatelessWidget {
   final Map<String, dynamic> badge;
   final bool unlocked;
-
   const _BadgeCard({required this.badge, required this.unlocked});
-
   @override
   Widget build(BuildContext context) {
+    final Color badgeColor = badge['color'] as Color;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -326,7 +252,7 @@ class _BadgeCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: unlocked
-                ? (badge['color'] as Color).withValues(alpha: 0.15)
+                ? badgeColor.withValues(alpha: 0.15)
                 : Theme.of(context).shadowColor.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 6),
@@ -334,51 +260,36 @@ class _BadgeCard extends StatelessWidget {
         ],
         border: Border.all(
           color: unlocked
-              ? (badge['color'] as Color).withValues(alpha: 0.3)
+              ? badgeColor.withValues(alpha: 0.3)
               : Theme.of(
                   context,
                 ).colorScheme.outlineVariant.withValues(alpha: 0.5),
           width: unlocked ? 2 : 1,
         ),
       ),
-      child: Container(
-        decoration: unlocked
-            ? BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.surface,
-                    (badge['color'] as Color).withValues(alpha: 0.05),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              )
-            : null,
+      child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            // Badge Icon
+            // Icon
             Container(
               width: 80,
               height: 80,
               decoration: BoxDecoration(
                 color: unlocked
-                    ? (badge['color'] as Color).withValues(alpha: 0.15)
+                    ? badgeColor.withValues(alpha: 0.15)
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: unlocked
-                      ? badge['color'] as Color
+                      ? badgeColor
                       : Theme.of(context).colorScheme.outlineVariant,
                   width: 3,
                 ),
                 boxShadow: unlocked
                     ? [
                         BoxShadow(
-                          color: (badge['color'] as Color).withValues(
-                            alpha: 0.3,
-                          ),
+                          color: badgeColor.withValues(alpha: 0.3),
                           blurRadius: 12,
                           spreadRadius: 2,
                         ),
@@ -389,140 +300,83 @@ class _BadgeCard extends StatelessWidget {
                 badge['icon'] as IconData,
                 size: 40,
                 color: unlocked
-                    ? badge['color'] as Color
+                    ? badgeColor
                     : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const Gap(20),
-
-            // Badge Details
+            // Details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          badge['name'] as String,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: unlocked
-                                ? null
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _getRarityColor(
-                            badge['rarity'] as String,
-                          ).withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: _getRarityColor(
-                              badge['rarity'] as String,
-                            ).withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Text(
-                          badge['rarity'] as String,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: _getRarityColor(badge['rarity'] as String),
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    badge['name'] as String,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Gap(8),
                   Text(
                     badge['description'] as String,
                     style: TextStyle(
                       fontSize: 13,
-                      height: 1.4,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  if (unlocked) ...[
-                    const Gap(12),
+                  const Gap(12),
+                  if (unlocked)
                     Row(
                       children: [
-                        Icon(
-                          Icons.check_circle,
-                          size: 16,
-                          color: badge['color'] as Color,
-                        ),
+                        Icon(Icons.check_circle, size: 16, color: badgeColor),
                         const Gap(6),
                         Text(
                           'Unlocked on ${badge['date']}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: badge['color'] as Color,
+                            color: badgeColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
-                    ),
-                  ] else ...[
-                    const Gap(16),
-                    TweenAnimationBuilder<double>(
-                      tween: Tween(
-                        begin: 0.0,
-                        end: badge['progress'] as double,
-                      ),
-                      duration: const Duration(milliseconds: 1000),
-                      curve: Curves.easeOut,
-                      builder: (context, value, _) {
-                        return Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: LinearProgressIndicator(
-                                value: value,
-                                minHeight: 8,
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  badge['color'] as Color,
-                                ),
-                              ),
+                    )
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Progress bar
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: LinearProgressIndicator(
+                            value: badge['progress'] as double?,
+                            minHeight: 8,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              badgeColor,
                             ),
-                            const Gap(8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${badge['current']} / ${badge['total']}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  '${(value * 100).toInt()}%',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: badge['color'] as Color,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                          ),
+                        ),
+                        const Gap(8),
+                        Text(
+                          '${badge['current']} / ${badge['total']}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '${((badge['progress'] as double?) ?? 0) * 100.toInt()}%',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: badgeColor,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
                 ],
               ),
             ),
@@ -530,20 +384,5 @@ class _BadgeCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getRarityColor(String rarity) {
-    switch (rarity) {
-      case 'Legendary':
-        return Colors.purple;
-      case 'Epic':
-        return Colors.deepPurple;
-      case 'Rare':
-        return Colors.blue;
-      case 'Common':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
   }
 }
