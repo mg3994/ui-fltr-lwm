@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -7,53 +8,67 @@ class LeaderboardScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTab = useState(0); // 0: Mentors, 1: Mentees
+    final selectedPeriod = useState('This Week');
+    final periods = ['Today', 'This Week', 'This Month', 'All Time'];
 
-    final topMentors = [
-      {
-        'rank': 1,
-        'name': 'Sarah Jenkins',
-        'avatar': 'https://i.pravatar.cc/150?u=1',
-        'points': 2850,
-        'sessions': 142,
-        'rating': 4.9,
-        'badge': '🏆',
-      },
+    final topUsers = [
       {
         'rank': 2,
-        'name': 'Michael Brown',
-        'avatar': 'https://i.pravatar.cc/150?u=4',
-        'points': 2640,
-        'sessions': 128,
-        'rating': 5.0,
+        'name': 'Sarah Johnson',
+        'avatar': 'https://i.pravatar.cc/150?img=1',
+        'points': 8750,
+        'sessions': 45,
         'badge': '🥈',
+        'color': Colors.grey,
+      },
+      {
+        'rank': 1,
+        'name': 'Alex Chen',
+        'avatar': 'https://i.pravatar.cc/150?img=2',
+        'points': 9500,
+        'sessions': 52,
+        'badge': '🏆',
+        'color': Colors.amber,
       },
       {
         'rank': 3,
-        'name': 'David Chen',
-        'avatar': 'https://i.pravatar.cc/150?u=2',
-        'points': 2420,
-        'sessions': 115,
-        'rating': 4.8,
+        'name': 'Maria Garcia',
+        'avatar': 'https://i.pravatar.cc/150?img=3',
+        'points': 8200,
+        'sessions': 38,
         'badge': '🥉',
+        'color': Colors.brown,
       },
+    ];
+
+    final otherUsers = [
       {
         'rank': 4,
-        'name': 'Emily Davis',
-        'avatar': 'https://i.pravatar.cc/150?u=3',
-        'points': 2180,
-        'sessions': 98,
-        'rating': 4.7,
-        'badge': '',
+        'name': 'John Smith',
+        'avatar': 'https://i.pravatar.cc/150?img=4',
+        'points': 7800,
+        'sessions': 35,
       },
       {
         'rank': 5,
-        'name': 'Alex Kumar',
-        'avatar': 'https://i.pravatar.cc/150?u=5',
-        'points': 1950,
-        'sessions': 87,
-        'rating': 4.8,
-        'badge': '',
+        'name': 'Emily Davis',
+        'avatar': 'https://i.pravatar.cc/150?img=5',
+        'points': 7500,
+        'sessions': 32,
+      },
+      {
+        'rank': 6,
+        'name': 'Michael Brown',
+        'avatar': 'https://i.pravatar.cc/150?img=6',
+        'points': 7200,
+        'sessions': 30,
+      },
+      {
+        'rank': 7,
+        'name': 'Lisa Wilson',
+        'avatar': 'https://i.pravatar.cc/150?img=7',
+        'points': 6900,
+        'sessions': 28,
       },
     ];
 
@@ -91,60 +106,91 @@ class LeaderboardScreen extends HookWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(
-                    value: 0,
-                    label: Text('Top Mentors'),
-                    icon: Icon(Icons.school),
-                  ),
-                  ButtonSegment(
-                    value: 1,
-                    label: Text('Top Learners'),
-                    icon: Icon(Icons.emoji_events),
-                  ),
-                ],
-                selected: {selectedTab.value},
-                onSelectionChanged: (newSelection) {
-                  selectedTab.value = newSelection.first;
-                },
-                style: ButtonStyle(
-                  side: WidgetStateProperty.all(
-                    BorderSide(
-                      color: Theme.of(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: periods.map((period) {
+                  final isSelected = selectedPeriod.value == period;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text(period),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) selectedPeriod.value = period;
+                      },
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      selectedColor: Theme.of(
                         context,
-                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ).colorScheme.primaryContainer,
+                      labelStyle: TextStyle(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.onSurface,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                      side: BorderSide(
+                        color: isSelected
+                            ? Colors.transparent
+                            : Theme.of(context).colorScheme.outlineVariant
+                                  .withValues(alpha: 0.5),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }).toList(),
               ),
             ),
           ),
-          if (topMentors.length >= 3)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _PodiumCard(user: topMentors[1], height: 120),
-                    _PodiumCard(user: topMentors[0], height: 150),
-                    _PodiumCard(user: topMentors[2], height: 100),
-                  ],
-                ),
+          // Top 3 Podium
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.scale(
+                      scale: 0.9 + (0.1 * value),
+                      child: child,
+                    ),
+                  );
+                },
+                child: _PodiumWidget(topUsers: topUsers),
               ),
             ),
-          const SliverGap(16),
+          ),
+          const SliverGap(24),
+          // Other Rankings
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                final user = topMentors[index];
-                return _LeaderboardCard(user: user);
-              }, childCount: topMentors.length),
+                final user = otherUsers[index];
+                return TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: Duration(milliseconds: 400 + (index * 100)),
+                  curve: Curves.easeOut,
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: _RankingCard(user: user),
+                );
+              }, childCount: otherUsers.length),
             ),
           ),
           const SliverGap(80),
@@ -154,207 +200,230 @@ class LeaderboardScreen extends HookWidget {
   }
 }
 
-class _PodiumCard extends StatelessWidget {
-  final Map<String, dynamic> user;
-  final double height;
+class _PodiumWidget extends StatelessWidget {
+  final List<Map<String, dynamic>> topUsers;
 
-  const _PodiumCard({required this.user, required this.height});
+  const _PodiumWidget({required this.topUsers});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.3),
-                  width: 3,
+    // Reorder to show 2nd, 1st, 3rd
+    final orderedUsers = [topUsers[0], topUsers[1], topUsers[2]];
+    final heights = [180.0, 220.0, 160.0];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: orderedUsers.asMap().entries.map((entry) {
+        final index = entry.key;
+        final user = entry.value;
+        final height = heights[index];
+
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Column(
+              children: [
+                // Avatar
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: user['color'] as Color, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: (user['color'] as Color).withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: index == 1 ? 40 : 32,
+                    backgroundImage: NetworkImage(user['avatar'] as String),
+                  ),
                 ),
-              ),
-              child: CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(user['avatar'] as String),
-              ),
-            ),
-            if ((user['badge'] as String).isNotEmpty)
-              Positioned(
-                top: -5,
-                child: Text(
+                const Gap(8),
+                Text(
                   user['badge'] as String,
-                  style: const TextStyle(fontSize: 24),
+                  style: TextStyle(fontSize: index == 1 ? 32 : 24),
                 ),
-              ),
-          ],
-        ),
-        const Gap(8),
-        Text(
-          user['name'] as String,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          textAlign: TextAlign.center,
-        ),
-        const Gap(4),
-        Text(
-          '${user['points']} pts',
-          style: TextStyle(
-            fontSize: 11,
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Gap(8),
-        Container(
-          width: 80,
-          height: height,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(
-                  context,
-                ).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                const Gap(4),
+                Text(
+                  (user['name'] as String).split(' ')[0],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: index == 1 ? 14 : 12,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Gap(2),
+                Text(
+                  '${user['points']} pts',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const Gap(12),
+                // Podium
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(12),
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      height: height,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            (user['color'] as Color).withValues(alpha: 0.3),
+                            (user['color'] as Color).withValues(alpha: 0.1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                        border: Border.all(
+                          color: (user['color'] as Color).withValues(
+                            alpha: 0.5,
+                          ),
+                          width: 2,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '#${user['rank']}',
+                          style: TextStyle(
+                            fontSize: index == 1 ? 48 : 36,
+                            fontWeight: FontWeight.bold,
+                            color: user['color'] as Color,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
-          child: Center(
-            child: Text(
-              '#${user['rank']}',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-        ),
-      ],
+        );
+      }).toList(),
     );
   }
 }
 
-class _LeaderboardCard extends StatelessWidget {
+class _RankingCard extends StatelessWidget {
   final Map<String, dynamic> user;
 
-  const _LeaderboardCard({required this.user});
+  const _RankingCard({required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final rank = user['rank'] as int;
-    final isTopThree = rank <= 3;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: isTopThree
-            ? Theme.of(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(
                 context,
-              ).colorScheme.primaryContainer.withValues(alpha: 0.3)
-            : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isTopThree
-              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
-              : Theme.of(
-                  context,
-                ).colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+              ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
           ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: isTopThree
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.surfaceContainerHighest,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  '#$rank',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: isTopThree
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                // Rank
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                        Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '#${user['rank']}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const Gap(16),
+                // Avatar
+                CircleAvatar(
+                  radius: 24,
+                  backgroundImage: NetworkImage(user['avatar'] as String),
+                ),
+                const Gap(16),
+                // Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user['name'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const Gap(4),
+                      Text(
+                        '${user['sessions']} sessions',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Points
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${user['points']}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    Text(
+                      'points',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const Gap(12),
-            CircleAvatar(
-              backgroundImage: NetworkImage(user['avatar'] as String),
-            ),
-          ],
-        ),
-        title: Text(
-          user['name'] as String,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Row(
-          children: [
-            const Icon(Icons.star, size: 14, color: Colors.amber),
-            const Gap(4),
-            Text('${user['rating']}'),
-            const Gap(12),
-            Icon(
-              Icons.video_call,
-              size: 14,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const Gap(4),
-            Text('${user['sessions']} sessions'),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${user['points']}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            Text(
-              'points',
-              style: TextStyle(
-                fontSize: 11,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

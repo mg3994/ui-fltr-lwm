@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -7,327 +8,322 @@ class WalletScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final balance = 1250.50;
-    final pendingEarnings = 350.00;
+    final selectedTab = useState(0); // 0: Transactions, 1: Payment Methods
 
     final transactions = [
       {
-        'type': 'credit',
         'title': 'Session Payment',
-        'description': 'Flutter State Management session with John Doe',
-        'amount': 50.00,
+        'subtitle': 'John Doe - Flutter Workshop',
+        'amount': -50.0,
         'date': '2 hours ago',
-        'status': 'completed',
-        'icon': Icons.video_call,
+        'type': 'payment',
+        'icon': Icons.arrow_upward,
+        'color': Colors.red,
       },
       {
-        'type': 'credit',
-        'title': 'Referral Bonus',
-        'description': 'Jane Smith signed up using your code',
-        'amount': 50.00,
+        'title': 'Earnings',
+        'subtitle': 'Sarah Smith - 1-on-1 Session',
+        'amount': 75.0,
         'date': '1 day ago',
-        'status': 'completed',
-        'icon': Icons.people,
+        'type': 'earning',
+        'icon': Icons.arrow_downward,
+        'color': Colors.green,
       },
       {
-        'type': 'debit',
         'title': 'Withdrawal',
-        'description': 'Bank transfer to ****1234',
-        'amount': -200.00,
-        'date': '2 days ago',
-        'status': 'completed',
-        'icon': Icons.account_balance,
-      },
-      {
-        'type': 'credit',
-        'title': 'Session Payment',
-        'description': 'UI/UX Design review with Mike Johnson',
-        'amount': 45.00,
+        'subtitle': 'Bank Transfer',
+        'amount': -200.0,
         'date': '3 days ago',
-        'status': 'completed',
-        'icon': Icons.video_call,
+        'type': 'withdrawal',
+        'icon': Icons.account_balance,
+        'color': Colors.blue,
       },
       {
-        'type': 'credit',
-        'title': 'Milestone Bonus',
-        'description': '100 sessions completed achievement',
-        'amount': 100.00,
+        'title': 'Refund',
+        'subtitle': 'Cancelled Session',
+        'amount': 50.0,
         'date': '5 days ago',
-        'status': 'completed',
-        'icon': Icons.emoji_events,
+        'type': 'refund',
+        'icon': Icons.refresh,
+        'color': Colors.orange,
+      },
+    ];
+
+    final paymentMethods = [
+      {
+        'type': 'Credit Card',
+        'last4': '4242',
+        'brand': 'Visa',
+        'icon': Icons.credit_card,
+        'color': Colors.blue,
+        'isDefault': true,
       },
       {
-        'type': 'credit',
-        'title': 'Session Payment',
-        'description': 'Career coaching with Sarah Williams',
-        'amount': 60.00,
-        'date': '1 week ago',
-        'status': 'pending',
-        'icon': Icons.video_call,
+        'type': 'PayPal',
+        'email': 'user@example.com',
+        'icon': Icons.payment,
+        'color': Colors.indigo,
+        'isDefault': false,
+      },
+      {
+        'type': 'Bank Account',
+        'last4': '6789',
+        'bank': 'Chase',
+        'icon': Icons.account_balance,
+        'color': Colors.teal,
+        'isDefault': false,
       },
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wallet'),
-        actions: [
-          IconButton(icon: const Icon(Icons.history), onPressed: () {}),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Credit Card Visualization
-          Container(
-            height: 200,
-            padding: const EdgeInsets.all(24.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.tertiary,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 280,
+            pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.8),
+                          Theme.of(
+                            context,
+                          ).colorScheme.tertiary.withValues(alpha: 0.6),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Total Balance',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Gap(8),
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.0, end: 1250.50),
+                            duration: const Duration(milliseconds: 1500),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) {
+                              return Text(
+                                '\$${value.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
+                          ),
+                          const Gap(24),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _BalanceCard(
+                                  label: 'Earnings',
+                                  amount: 2450.0,
+                                  icon: Icons.trending_up,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              const Gap(12),
+                              Expanded(
+                                child: _BalanceCard(
+                                  label: 'Spent',
+                                  amount: 1199.50,
+                                  icon: Icons.trending_down,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Available Balance',
-                      style: TextStyle(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary.withValues(alpha: 0.8),
-                        fontSize: 14,
-                      ),
-                    ),
-                    Icon(
-                      Icons.contactless,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(
+                    value: 0,
+                    label: Text('Transactions'),
+                    icon: Icon(Icons.receipt_long),
+                  ),
+                  ButtonSegment(
+                    value: 1,
+                    label: Text('Payment Methods'),
+                    icon: Icon(Icons.payment),
+                  ),
+                ],
+                selected: {selectedTab.value},
+                onSelectionChanged: (newSelection) {
+                  selectedTab.value = newSelection.first;
+                },
+                style: ButtonStyle(
+                  side: WidgetStateProperty.all(
+                    BorderSide(
                       color: Theme.of(
                         context,
-                      ).colorScheme.onPrimary.withValues(alpha: 0.8),
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                     ),
-                  ],
-                ),
-                Text(
-                  '\$${balance.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Card Holder',
-                          style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onPrimary.withValues(alpha: 0.6),
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          'Manish',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Expires',
-                          style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onPrimary.withValues(alpha: 0.6),
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          '12/28',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
-
-          const Gap(24),
-
-          // Pending Balance
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.hourglass_empty,
-                    color: Colors.orange,
-                  ),
-                ),
-                const Gap(16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Pending Clearance',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 12,
+          if (selectedTab.value == 0)
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final transaction = transactions[index];
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 300 + (index * 100)),
+                    curve: Curves.easeOut,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Transform.translate(
+                          offset: Offset(0, 20 * (1 - value)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _TransactionCard(transaction: transaction),
+                  );
+                }, childCount: transactions.length),
+              ),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == paymentMethods.length) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add Payment Method'),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 56),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(
-                      '\$${pendingEarnings.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                TextButton(onPressed: () {}, child: const Text('Details')),
-              ],
+                    );
+                  }
+                  final method = paymentMethods[index];
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 300 + (index * 100)),
+                    curve: Curves.easeOut,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Transform.translate(
+                          offset: Offset(0, 20 * (1 - value)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _PaymentMethodCard(method: method),
+                  );
+                }, childCount: paymentMethods.length + 1),
+              ),
             ),
-          ),
-
-          const Gap(24),
-
-          // Quick Actions
-          Row(
-            children: [
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.add,
-                  label: 'Add Funds',
-                  onTap: () {},
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const Gap(16),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.arrow_upward,
-                  label: 'Withdraw',
-                  onTap: () {},
-                  color: Colors.green,
-                ),
-              ),
-              const Gap(16),
-              Expanded(
-                child: _ActionButton(
-                  icon: Icons.swap_horiz,
-                  label: 'Transfer',
-                  onTap: () {},
-                  color: Colors.blue,
-                ),
-              ),
-            ],
-          ),
-
-          const Gap(32),
-
-          // Transactions
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Recent Transactions',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              TextButton(onPressed: () {}, child: const Text('View All')),
-            ],
-          ),
-          const Gap(16),
-
-          ...transactions.map(
-            (transaction) => _TransactionCard(transaction: transaction),
-          ),
+          const SliverGap(80),
         ],
       ),
+      floatingActionButton: selectedTab.value == 0
+          ? FloatingActionButton.extended(
+              onPressed: () {},
+              icon: const Icon(Icons.account_balance_wallet),
+              label: const Text('Withdraw'),
+            )
+          : null,
     );
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
+class _BalanceCard extends StatelessWidget {
   final String label;
-  final VoidCallback onTap;
+  final double amount;
+  final IconData icon;
   final Color color;
 
-  const _ActionButton({
-    required this.icon,
+  const _BalanceCard({
     required this.label,
-    required this.onTap,
+    required this.amount,
+    required this.icon,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
+    return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color),
-            const Gap(8),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-                fontSize: 12,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: color, size: 24),
+              const Gap(8),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: amount),
+                duration: const Duration(milliseconds: 1500),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, child) {
+                  return Text(
+                    '\$${value.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+              Text(
+                label,
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -341,93 +337,192 @@ class _TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCredit = transaction['type'] == 'credit';
-    final amount = transaction['amount'] as double;
-    final isPending = transaction['status'] == 'pending';
+    final isNegative = (transaction['amount'] as double) < 0;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Container(
-          padding: const EdgeInsets.all(12),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: isCredit
-                ? Colors.green.withValues(alpha: 0.1)
-                : Colors.red.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            transaction['icon'] as IconData,
-            color: isCredit ? Colors.green : Colors.red,
-            size: 20,
-          ),
-        ),
-        title: Text(
-          transaction['title'] as String,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Gap(4),
-            Text(
-              transaction['description'] as String,
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(
+                context,
+              ).colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
-            const Gap(4),
-            Row(
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
               children: [
-                Text(
-                  transaction['date'] as String,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: (transaction['color'] as Color).withValues(
+                      alpha: 0.2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    transaction['icon'] as IconData,
+                    color: transaction['color'] as Color,
+                    size: 24,
                   ),
                 ),
-                if (isPending) ...[
-                  const Gap(8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      'Pending',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold,
+                const Gap(16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        transaction['title'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
+                      const Gap(4),
+                      Text(
+                        transaction['subtitle'] as String,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const Gap(4),
+                      Text(
+                        transaction['date'] as String,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+                Text(
+                  '${isNegative ? '-' : '+'}\$${(transaction['amount'] as double).abs().toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: isNegative ? Colors.red : Colors.green,
+                  ),
+                ),
               ],
             ),
-          ],
+          ),
         ),
-        trailing: Text(
-          '${amount >= 0 ? '+' : ''}\$${amount.abs().toStringAsFixed(2)}',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: isCredit ? Colors.green : Colors.red,
+      ),
+    );
+  }
+}
+
+class _PaymentMethodCard extends StatelessWidget {
+  final Map<String, dynamic> method;
+
+  const _PaymentMethodCard({required this.method});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDefault = method['isDefault'] as bool;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                (method['color'] as Color).withValues(alpha: 0.2),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDefault
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+              width: isDefault ? 2 : 1,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: (method['color'] as Color).withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    method['icon'] as IconData,
+                    color: method['color'] as Color,
+                    size: 28,
+                  ),
+                ),
+                const Gap(16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            method['type'] as String,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                          if (isDefault) ...[
+                            const Gap(8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                'Default',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const Gap(4),
+                      Text(
+                        method.containsKey('last4')
+                            ? '•••• ${method['last4']}'
+                            : method['email'] as String,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+              ],
+            ),
           ),
         ),
       ),
