@@ -11,11 +11,10 @@ import 'package:linkwithmentor/features/notifications/notifications_screen.dart'
 import 'package:linkwithmentor/features/shared/search_screen.dart';
 import 'package:linkwithmentor/features/community/create_post_screen.dart';
 import 'package:linkwithmentor/features/tools/career_path_screen.dart';
-import 'package:linkwithmentor/features/tools/certifications_screen.dart';
+
 import 'package:linkwithmentor/features/tools/goals_screen.dart';
 import 'package:linkwithmentor/features/tools/interview_prep_screen.dart';
-import 'package:linkwithmentor/features/tools/job_board_screen.dart';
-import 'package:linkwithmentor/features/tools/referral_screen.dart';
+
 import 'package:linkwithmentor/features/tools/resume_builder_screen.dart';
 import 'package:linkwithmentor/features/tools/portfolio_builder_screen.dart';
 import 'package:linkwithmentor/features/tools/badges_screen.dart';
@@ -28,45 +27,42 @@ import 'package:linkwithmentor/features/community/events_screen.dart';
 import 'package:linkwithmentor/features/community/resources_screen.dart';
 import 'package:linkwithmentor/features/community/leaderboard_screen.dart';
 import 'package:linkwithmentor/features/tools/learning_path_screen.dart';
-import 'package:linkwithmentor/features/tools/mentorship_goals_screen.dart';
-import 'package:linkwithmentor/features/tools/progress_tracker_screen.dart';
-import 'package:linkwithmentor/features/tools/challenges_screen.dart';
-import 'package:linkwithmentor/features/community/community_insights_screen.dart';
-import 'package:linkwithmentor/features/community/community_polls_screen.dart';
-import 'package:linkwithmentor/features/community/mentor_spotlight_screen.dart';
-import 'package:linkwithmentor/features/community/networking_events_screen.dart';
-import 'package:linkwithmentor/features/community/skill_exchange_screen.dart';
-import 'package:linkwithmentor/features/community/success_stories_screen.dart';
-import 'package:linkwithmentor/features/community/networking_hub_screen.dart';
 import 'package:linkwithmentor/features/tools/project_collaboration_screen.dart';
-import 'package:linkwithmentor/features/community/knowledge_base_screen.dart';
-import 'package:linkwithmentor/features/community/hackathon_hub_screen.dart';
-import 'package:linkwithmentor/features/tools/daily_standup_screen.dart';
+import 'package:linkwithmentor/features/community/networking_hub_screen.dart';
 import 'package:linkwithmentor/features/community/virtual_office_screen.dart';
 import 'package:linkwithmentor/features/community/audio_room_screen.dart';
-import 'package:linkwithmentor/features/community/alumni_network_screen.dart';
-import 'package:linkwithmentor/features/community/company_page_screen.dart';
-
-import 'package:linkwithmentor/features/tools/startup_incubator_screen.dart';
 import 'package:linkwithmentor/features/shared/settings_screen.dart';
 import 'package:linkwithmentor/features/shared/help_support_screen.dart';
-import 'package:linkwithmentor/features/tools/analytics_dashboard_screen.dart';
-import 'package:linkwithmentor/features/tools/stats_screen.dart';
-import 'package:linkwithmentor/features/community/discover_screen.dart';
-import 'package:linkwithmentor/features/community/trending_screen.dart';
-import 'package:linkwithmentor/features/shared/bookmarks_screen.dart';
-import 'package:linkwithmentor/features/tools/milestones_screen.dart';
 import 'package:linkwithmentor/features/gamification/rewards_screen.dart';
-import 'package:linkwithmentor/features/tools/certificates_screen.dart';
-import 'package:linkwithmentor/features/tools/career_roadmap_screen.dart';
 import 'package:linkwithmentor/features/gamification/challenges_screen.dart'
     as gamification;
 import 'package:linkwithmentor/features/community/mentor_matching_screen.dart';
-import 'package:linkwithmentor/features/shared/quick_actions_screen.dart';
 import 'package:linkwithmentor/features/tools/reflection_journal_screen.dart';
 import 'package:linkwithmentor/features/community/virtual_coffee_screen.dart';
 import 'package:linkwithmentor/features/tools/code_review_screen.dart';
 import 'package:linkwithmentor/features/community/peer_learning_screen.dart';
+import 'package:linkwithmentor/features/tools/startup_incubator_screen.dart';
+import 'package:linkwithmentor/features/tools/daily_standup_screen.dart';
+import 'package:linkwithmentor/features/tools/analytics_dashboard_screen.dart';
+import 'package:linkwithmentor/features/community/hackathon_hub_screen.dart';
+import 'package:linkwithmentor/features/community/skill_exchange_screen.dart';
+import 'package:linkwithmentor/features/community/community_insights_screen.dart';
+import 'package:linkwithmentor/features/community/community_polls_screen.dart';
+import 'package:linkwithmentor/features/community/mentor_spotlight_screen.dart';
+import 'package:linkwithmentor/features/community/alumni_network_screen.dart';
+import 'package:linkwithmentor/features/community/company_page_screen.dart';
+import 'package:linkwithmentor/features/community/networking_events_screen.dart';
+import 'package:linkwithmentor/features/community/success_stories_screen.dart';
+import 'package:linkwithmentor/features/community/knowledge_base_screen.dart';
+import 'package:linkwithmentor/features/tools/mock_interview_screen.dart';
+import 'package:linkwithmentor/features/tools/salary_negotiation_screen.dart';
+import 'package:linkwithmentor/features/tools/career_roadmap_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_gap_analyzer_screen.dart';
+import 'package:linkwithmentor/features/tools/certificates_screen.dart';
+import 'package:linkwithmentor/features/tools/referral_screen.dart';
+import 'package:linkwithmentor/features/tools/milestones_screen.dart';
+import 'package:linkwithmentor/features/tools/progress_tracker_screen.dart';
+import 'package:linkwithmentor/features/tools/stats_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -151,7 +147,7 @@ class MainScreen extends HookWidget {
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                'Tools & Resources',
+                'Tools & Growth',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -183,44 +179,14 @@ class MainScreen extends HookWidget {
               context,
               'Job Board',
               Icons.work,
-              const JobBoardScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Certifications',
-              Icons.workspace_premium,
-              const CertificationsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Skill Assessment',
-              Icons.assessment,
               const SkillAssessmentScreen(),
             ),
             _buildDrawerItem(context, 'Goals', Icons.flag, const GoalsScreen()),
             _buildDrawerItem(
               context,
-              'Referrals',
-              Icons.people_outline,
-              const ReferralScreen(),
-            ),
-            _buildDrawerItem(
-              context,
               'Learning Paths',
               Icons.school,
               const LearningPathScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Mentorship Goals',
-              Icons.track_changes,
-              const MentorshipGoalsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Progress Tracker',
-              Icons.bar_chart,
-              const ProgressTrackerScreen(),
             ),
             _buildDrawerItem(
               context,
@@ -230,53 +196,93 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Daily Standup',
-              Icons.today,
-              const DailyStandupScreen(),
+              'Reflection Journal',
+              Icons.book,
+              const ReflectionJournalScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Code Review',
+              Icons.rate_review,
+              const CodeReviewScreen(),
             ),
             _buildDrawerItem(
               context,
               'Startup Incubator',
-              Icons.rocket_launch,
+              Icons.lightbulb_outline,
               const StartupIncubatorScreen(),
             ),
+            _buildDrawerItem(
+              context,
+              'Daily Standup',
+              Icons.history,
+              const DailyStandupScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Analytics',
+              Icons.analytics,
+              const AnalyticsDashboardScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Mock Interviews',
+              Icons.videocam_outlined,
+              const MockInterviewScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Salary Negotiation',
+              Icons.monetization_on_outlined,
+              const SalaryNegotiationScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Career Roadmap',
+              Icons.map_outlined,
+              const CareerRoadmapScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Skill Gap Analyzer',
+              Icons.difference_outlined,
+              const SkillGapAnalyzerScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Certificates',
+              Icons.workspace_premium_outlined,
+              const CertificatesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Referral Program',
+              Icons.person_add_alt_1_outlined,
+              const ReferralScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Milestones',
+              Icons.flag_outlined,
+              const MilestonesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Progress Tracker',
+              Icons.bar_chart_outlined,
+              const ProgressTrackerScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Stats',
+              Icons.query_stats,
+              const StatsScreen(),
+            ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                'Gamification',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            _buildDrawerItem(
-              context,
-              'Badges',
-              Icons.military_tech,
-              const BadgesScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Streaks',
-              Icons.local_fire_department,
-              const StreaksScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Achievements',
-              Icons.emoji_events,
-              const AchievementsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Challenges',
-              Icons.sports_score,
-              const ChallengesScreen(),
-            ),
-            const Divider(),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Community',
+                'Community & Networking',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -312,7 +318,55 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Community Insights',
+              'Virtual Coffee',
+              Icons.coffee,
+              const VirtualCoffeeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Peer Learning',
+              Icons.groups_2,
+              const PeerLearningScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Mentor Matching',
+              Icons.people_alt,
+              const MentorMatchingScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Networking Hub',
+              Icons.hub,
+              const NetworkingHubScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Virtual Office',
+              Icons.business,
+              const VirtualOfficeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Audio Rooms',
+              Icons.mic,
+              const AudioRoomScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Hackathons',
+              Icons.emoji_events_outlined,
+              const HackathonHubScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Skill Exchange',
+              Icons.swap_horiz,
+              const SkillExchangeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Insights',
               Icons.insights,
               const CommunityInsightsScreen(),
             ),
@@ -330,15 +384,21 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Networking Events',
-              Icons.connect_without_contact,
-              const NetworkingEventsScreen(),
+              'Alumni Network',
+              Icons.school_outlined,
+              const AlumniNetworkScreen(),
             ),
             _buildDrawerItem(
               context,
-              'Skill Exchange',
-              Icons.swap_horiz,
-              const SkillExchangeScreen(),
+              'Company Pages',
+              Icons.business_center_outlined,
+              const CompanyPageScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Networking Events',
+              Icons.event_available,
+              const NetworkingEventsScreen(),
             ),
             _buildDrawerItem(
               context,
@@ -348,57 +408,29 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Networking Hub',
-              Icons.people_alt,
-              const NetworkingHubScreen(),
-            ),
-            _buildDrawerItem(
-              context,
               'Knowledge Base',
-              Icons.menu_book,
+              Icons.library_books_outlined,
               const KnowledgeBaseScreen(),
             ),
-            _buildDrawerItem(
-              context,
-              'Hackathon Hub',
-              Icons.code,
-              const HackathonHubScreen(),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Gamification',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
             _buildDrawerItem(
               context,
-              'Virtual Office',
-              Icons.business,
-              const VirtualOfficeScreen(),
+              'Badges',
+              Icons.military_tech,
+              const BadgesScreen(),
             ),
             _buildDrawerItem(
               context,
-              'Audio Rooms',
-              Icons.mic,
-              const AudioRoomScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Alumni Network',
-              Icons.school,
-              const AlumniNetworkScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Company Pages',
-              Icons.business_center,
-              const CompanyPageScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Events',
-              Icons.event,
-              const EventsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Job Board',
-              Icons.work,
-              const JobBoardScreen(),
+              'Streaks',
+              Icons.local_fire_department,
+              const StreaksScreen(),
             ),
             _buildDrawerItem(
               context,
@@ -408,105 +440,15 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Learning Path',
-              Icons.school,
-              const LearningPathScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Discover',
-              Icons.explore,
-              const DiscoverScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Analytics',
-              Icons.analytics,
-              const AnalyticsDashboardScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Stats',
-              Icons.bar_chart,
-              const StatsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Trending',
-              Icons.whatshot,
-              const TrendingScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Bookmarks',
-              Icons.bookmark,
-              const BookmarksScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Milestones',
-              Icons.flag,
-              const MilestonesScreen(),
+              'Challenges',
+              Icons.sports_score,
+              const gamification.ChallengesScreen(),
             ),
             _buildDrawerItem(
               context,
               'Rewards',
               Icons.card_giftcard,
               const RewardsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Certificates',
-              Icons.workspace_premium,
-              const CertificatesScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Career Roadmap',
-              Icons.route,
-              const CareerRoadmapScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Challenges',
-              Icons.emoji_events,
-              const gamification.ChallengesScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Mentor Matching',
-              Icons.people_alt,
-              const MentorMatchingScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Quick Actions',
-              Icons.bolt,
-              const QuickActionsScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Reflection Journal',
-              Icons.book,
-              const ReflectionJournalScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Virtual Coffee',
-              Icons.coffee,
-              const VirtualCoffeeScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Code Review',
-              Icons.rate_review,
-              const CodeReviewScreen(),
-            ),
-            _buildDrawerItem(
-              context,
-              'Peer Learning',
-              Icons.groups,
-              const PeerLearningScreen(),
             ),
             const Divider(),
             _buildDrawerItem(

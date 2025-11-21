@@ -3,8 +3,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import '../../core/services/webrtc_service.dart';
 
 class LiveSessionScreen extends StatefulWidget {
-  const LiveSessionScreen({Key? key, required this.sessionId})
-    : super(key: key);
+  const LiveSessionScreen({super.key, required this.sessionId});
   final String sessionId;
 
   @override

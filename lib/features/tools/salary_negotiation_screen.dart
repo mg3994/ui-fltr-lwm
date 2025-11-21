@@ -7,8 +7,6 @@ class SalaryNegotiationScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTab = useState(0);
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [

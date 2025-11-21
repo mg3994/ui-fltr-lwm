@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -182,11 +182,13 @@ class _GroupCard extends HookWidget {
       onExit: (_) => isHovered.value = false,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        transform: Matrix4.identity()..scale(isHovered.value ? 1.02 : 1.0),
+        transform: Matrix4.identity()
+          ..setEntry(0, 0, isHovered.value ? 1.02 : 1.0)
+          ..setEntry(1, 1, isHovered.value ? 1.02 : 1.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
