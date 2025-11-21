@@ -66,6 +66,7 @@ import 'package:linkwithmentor/features/shared/quick_actions_screen.dart';
 import 'package:linkwithmentor/features/tools/reflection_journal_screen.dart';
 import 'package:linkwithmentor/features/community/virtual_coffee_screen.dart';
 import 'package:linkwithmentor/features/tools/code_review_screen.dart';
+import 'package:linkwithmentor/features/community/peer_learning_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -500,6 +501,12 @@ class MainScreen extends HookWidget {
               'Code Review',
               Icons.rate_review,
               const CodeReviewScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Peer Learning',
+              Icons.groups,
+              const PeerLearningScreen(),
             ),
             const Divider(),
             _buildDrawerItem(
