@@ -79,6 +79,10 @@ import 'package:linkwithmentor/features/tools/one_on_one_sessions_screen.dart';
 import 'package:linkwithmentor/features/tools/skill_endorsements_screen.dart';
 import 'package:linkwithmentor/features/tools/mentorship_goals_milestones_screen.dart';
 import 'package:linkwithmentor/features/tools/networking_events_workshops_screen.dart';
+import 'package:linkwithmentor/features/tools/salary_negotiation_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_gap_analyzer_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_exchange_screen.dart'
+    as tools;
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
