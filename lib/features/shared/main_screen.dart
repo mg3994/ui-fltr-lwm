@@ -53,6 +53,19 @@ import 'package:linkwithmentor/features/shared/help_support_screen.dart';
 import 'package:linkwithmentor/features/tools/analytics_dashboard_screen.dart';
 import 'package:linkwithmentor/features/tools/stats_screen.dart';
 import 'package:linkwithmentor/features/community/discover_screen.dart';
+import 'package:linkwithmentor/features/community/trending_screen.dart';
+import 'package:linkwithmentor/features/shared/bookmarks_screen.dart';
+import 'package:linkwithmentor/features/tools/milestones_screen.dart';
+import 'package:linkwithmentor/features/gamification/rewards_screen.dart';
+import 'package:linkwithmentor/features/tools/certificates_screen.dart';
+import 'package:linkwithmentor/features/tools/career_roadmap_screen.dart';
+import 'package:linkwithmentor/features/gamification/challenges_screen.dart'
+    as gamification;
+import 'package:linkwithmentor/features/community/mentor_matching_screen.dart';
+import 'package:linkwithmentor/features/shared/quick_actions_screen.dart';
+import 'package:linkwithmentor/features/tools/reflection_journal_screen.dart';
+import 'package:linkwithmentor/features/community/virtual_coffee_screen.dart';
+import 'package:linkwithmentor/features/tools/code_review_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -415,6 +428,78 @@ class MainScreen extends HookWidget {
               'Stats',
               Icons.bar_chart,
               const StatsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Trending',
+              Icons.whatshot,
+              const TrendingScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Bookmarks',
+              Icons.bookmark,
+              const BookmarksScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Milestones',
+              Icons.flag,
+              const MilestonesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Rewards',
+              Icons.card_giftcard,
+              const RewardsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Certificates',
+              Icons.workspace_premium,
+              const CertificatesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Career Roadmap',
+              Icons.route,
+              const CareerRoadmapScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Challenges',
+              Icons.emoji_events,
+              const gamification.ChallengesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Mentor Matching',
+              Icons.people_alt,
+              const MentorMatchingScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Quick Actions',
+              Icons.bolt,
+              const QuickActionsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Reflection Journal',
+              Icons.book,
+              const ReflectionJournalScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Virtual Coffee',
+              Icons.coffee,
+              const VirtualCoffeeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Code Review',
+              Icons.rate_review,
+              const CodeReviewScreen(),
             ),
             const Divider(),
             _buildDrawerItem(

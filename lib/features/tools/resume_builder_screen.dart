@@ -14,8 +14,6 @@ class ResumeBuilderScreen extends HookWidget {
     final phoneController = useTextEditingController();
     final summaryController = useTextEditingController();
 
-    final steps = ['Personal Info', 'Experience', 'Education', 'Preview'];
-
     return Scaffold(
       body: Row(
         children: [
