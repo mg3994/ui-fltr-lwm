@@ -37,6 +37,19 @@ import 'package:linkwithmentor/features/community/mentor_spotlight_screen.dart';
 import 'package:linkwithmentor/features/community/networking_events_screen.dart';
 import 'package:linkwithmentor/features/community/skill_exchange_screen.dart';
 import 'package:linkwithmentor/features/community/success_stories_screen.dart';
+import 'package:linkwithmentor/features/community/networking_hub_screen.dart';
+import 'package:linkwithmentor/features/tools/project_collaboration_screen.dart';
+import 'package:linkwithmentor/features/community/knowledge_base_screen.dart';
+import 'package:linkwithmentor/features/community/hackathon_hub_screen.dart';
+import 'package:linkwithmentor/features/tools/daily_standup_screen.dart';
+import 'package:linkwithmentor/features/community/virtual_office_screen.dart';
+import 'package:linkwithmentor/features/community/audio_room_screen.dart';
+import 'package:linkwithmentor/features/community/alumni_network_screen.dart';
+import 'package:linkwithmentor/features/community/company_page_screen.dart';
+import 'package:linkwithmentor/features/community/wellness_hub_screen.dart';
+import 'package:linkwithmentor/features/tools/startup_incubator_screen.dart';
+import 'package:linkwithmentor/features/shared/settings_screen.dart';
+import 'package:linkwithmentor/features/shared/help_support_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -192,6 +205,24 @@ class MainScreen extends HookWidget {
               Icons.bar_chart,
               const ProgressTrackerScreen(),
             ),
+            _buildDrawerItem(
+              context,
+              'Project Collaboration',
+              Icons.folder_shared,
+              const ProjectCollaborationScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Daily Standup',
+              Icons.today,
+              const DailyStandupScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Startup Incubator',
+              Icons.rocket_launch,
+              const StartupIncubatorScreen(),
+            ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(16.0),
@@ -297,6 +328,67 @@ class MainScreen extends HookWidget {
               'Success Stories',
               Icons.auto_awesome,
               const SuccessStoriesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Networking Hub',
+              Icons.people_alt,
+              const NetworkingHubScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Knowledge Base',
+              Icons.menu_book,
+              const KnowledgeBaseScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Hackathon Hub',
+              Icons.code,
+              const HackathonHubScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Virtual Office',
+              Icons.business,
+              const VirtualOfficeScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Audio Rooms',
+              Icons.mic,
+              const AudioRoomScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Alumni Network',
+              Icons.school,
+              const AlumniNetworkScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Company Pages',
+              Icons.business_center,
+              const CompanyPageScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Wellness Hub',
+              Icons.self_improvement,
+              const WellnessHubScreen(),
+            ),
+            const Divider(),
+            _buildDrawerItem(
+              context,
+              'Settings',
+              Icons.settings,
+              const SettingsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Help & Support',
+              Icons.help_outline,
+              const HelpSupportScreen(),
             ),
           ],
         ),
