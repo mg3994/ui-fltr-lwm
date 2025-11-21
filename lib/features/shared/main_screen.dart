@@ -63,6 +63,20 @@ import 'package:linkwithmentor/features/tools/referral_screen.dart';
 import 'package:linkwithmentor/features/tools/milestones_screen.dart';
 import 'package:linkwithmentor/features/tools/progress_tracker_screen.dart';
 import 'package:linkwithmentor/features/tools/stats_screen.dart';
+import 'package:linkwithmentor/features/tools/premium_insights_screen.dart';
+import 'package:linkwithmentor/features/tools/growth_dashboard_screen.dart';
+import 'package:linkwithmentor/features/tools/career_insights_screen.dart';
+import 'package:linkwithmentor/features/tools/ai_mentor_match_screen.dart';
+import 'package:linkwithmentor/features/tools/learning_analytics_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_marketplace_screen.dart';
+import 'package:linkwithmentor/features/tools/live_coding_sessions_screen.dart';
+import 'package:linkwithmentor/features/tools/career_roadmap_visualizer_screen.dart';
+import 'package:linkwithmentor/features/tools/mentorship_matching_algorithm_screen.dart';
+import 'package:linkwithmentor/features/tools/knowledge_base_resources_screen.dart';
+import 'package:linkwithmentor/features/tools/peer_feedback_review_screen.dart';
+import 'package:linkwithmentor/features/tools/time_tracking_productivity_screen.dart';
+import 'package:linkwithmentor/features/tools/one_on_one_sessions_screen.dart';
+import 'package:linkwithmentor/features/tools/skill_endorsements_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -278,11 +292,95 @@ class MainScreen extends HookWidget {
               Icons.query_stats,
               const StatsScreen(),
             ),
+            _buildDrawerItem(
+              context,
+              'Premium Insights',
+              Icons.insights,
+              const PremiumInsightsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Growth Dashboard',
+              Icons.trending_up,
+              const GrowthDashboardScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Career Insights',
+              Icons.psychology,
+              const CareerInsightsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'AI Mentor Match',
+              Icons.people_alt,
+              const AiMentorMatchScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Learning Analytics',
+              Icons.analytics,
+              const LearningAnalyticsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Skill Marketplace',
+              Icons.storefront,
+              const SkillMarketplaceScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Live Coding Sessions',
+              Icons.live_tv,
+              const LiveCodingSessionsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Career Roadmap',
+              Icons.route,
+              const CareerRoadmapVisualizerScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Matching Algorithm',
+              Icons.psychology,
+              const MentorshipMatchingAlgorithmScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Knowledge Base',
+              Icons.library_books,
+              const KnowledgeBaseResourcesScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Peer Feedback',
+              Icons.rate_review,
+              const PeerFeedbackReviewScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Time Tracking',
+              Icons.timer,
+              const TimeTrackingProductivityScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              '1-on-1 Sessions',
+              Icons.video_call,
+              const OneOnOneSessionsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Skill Endorsements',
+              Icons.verified,
+              const SkillEndorsementsScreen(),
+            ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                'Community & Networking',
+                'Community',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
