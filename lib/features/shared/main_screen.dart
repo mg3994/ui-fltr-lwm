@@ -46,10 +46,13 @@ import 'package:linkwithmentor/features/community/virtual_office_screen.dart';
 import 'package:linkwithmentor/features/community/audio_room_screen.dart';
 import 'package:linkwithmentor/features/community/alumni_network_screen.dart';
 import 'package:linkwithmentor/features/community/company_page_screen.dart';
-import 'package:linkwithmentor/features/community/wellness_hub_screen.dart';
+
 import 'package:linkwithmentor/features/tools/startup_incubator_screen.dart';
 import 'package:linkwithmentor/features/shared/settings_screen.dart';
 import 'package:linkwithmentor/features/shared/help_support_screen.dart';
+import 'package:linkwithmentor/features/tools/analytics_dashboard_screen.dart';
+import 'package:linkwithmentor/features/tools/stats_screen.dart';
+import 'package:linkwithmentor/features/community/discover_screen.dart';
 
 class MainScreen extends HookWidget {
   const MainScreen({super.key});
@@ -373,9 +376,45 @@ class MainScreen extends HookWidget {
             ),
             _buildDrawerItem(
               context,
-              'Wellness Hub',
-              Icons.self_improvement,
-              const WellnessHubScreen(),
+              'Events',
+              Icons.event,
+              const EventsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Job Board',
+              Icons.work,
+              const JobBoardScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Achievements',
+              Icons.emoji_events,
+              const AchievementsScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Learning Path',
+              Icons.school,
+              const LearningPathScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Discover',
+              Icons.explore,
+              const DiscoverScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Analytics',
+              Icons.analytics,
+              const AnalyticsDashboardScreen(),
+            ),
+            _buildDrawerItem(
+              context,
+              'Stats',
+              Icons.bar_chart,
+              const StatsScreen(),
             ),
             const Divider(),
             _buildDrawerItem(
