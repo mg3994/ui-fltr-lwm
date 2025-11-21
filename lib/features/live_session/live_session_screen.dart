@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import '../../core/services/webrtc_service.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LiveSessionScreen extends StatefulWidget {
   const LiveSessionScreen({Key? key, required this.sessionId})
@@ -85,7 +84,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.35),
+            color: Colors.black.withValues(alpha: 0.35),
             borderRadius: BorderRadius.circular(30),
             // glass‑morphism blur effect
             backgroundBlendMode: BlendMode.overlay,
@@ -156,8 +155,8 @@ class _LiveSessionScreenState extends State<LiveSessionScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                  Theme.of(context).colorScheme.surface.withOpacity(0.05),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

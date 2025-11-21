@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +8,8 @@ class InterviewPrepScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectedTab = useState<String>('');
+
     final categories = [
       {
         'title': 'Technical Questions',
@@ -253,6 +256,41 @@ class InterviewPrepScreen extends HookWidget {
 
                 const Gap(32),
 
+                // Category Filter Chips
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          label: const Text('All'),
+                          selected: selectedTab.value == '',
+                          onSelected: (_) {
+                            selectedTab.value = '';
+                          },
+                        ),
+                      ),
+                      ...categories.map((cat) {
+                        final isSelected = cat['title'] == selectedTab.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: ChoiceChip(
+                            label: Text(cat['title'] as String),
+                            selected: isSelected,
+                            onSelected: (_) {
+                              selectedTab.value = isSelected
+                                  ? ''
+                                  : (cat['title'] as String);
+                            },
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                const Gap(16),
+
                 // Categories
                 const Text(
                   'Categories',
@@ -260,25 +298,34 @@ class InterviewPrepScreen extends HookWidget {
                 ),
                 const Gap(16),
 
-                ...categories.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final category = entry.value;
-                  return TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: Duration(milliseconds: 400 + (index * 100)),
-                    curve: Curves.easeOut,
-                    builder: (context, value, child) {
-                      return Opacity(
-                        opacity: value,
-                        child: Transform.translate(
-                          offset: Offset(0, 20 * (1 - value)),
-                          child: child,
-                        ),
+                ...categories
+                    .where(
+                      (cat) =>
+                          selectedTab.value == '' ||
+                          cat['title'] == selectedTab.value,
+                    )
+                    .toList()
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                      final index = entry.key;
+                      final category = entry.value;
+                      return TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        duration: Duration(milliseconds: 400 + (index * 100)),
+                        curve: Curves.easeOut,
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value,
+                            child: Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _CategoryCard(category: category),
                       );
-                    },
-                    child: _CategoryCard(category: category),
-                  );
-                }),
+                    }),
 
                 const Gap(32),
 
@@ -308,6 +355,7 @@ class InterviewPrepScreen extends HookWidget {
                     child: _QuestionCard(question: question),
                   );
                 }),
+
                 const Gap(80),
               ]),
             ),
@@ -371,82 +419,84 @@ class _CategoryCard extends StatelessWidget {
     final total = category['count'] as int;
     final progress = completed / total;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(
+                context,
+              ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
           ),
-        ],
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
-      child: InkWell(
-        onTap: () {},
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: (category['color'] as Color).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(
-                  category['icon'] as IconData,
-                  color: category['color'] as Color,
-                  size: 28,
-                ),
-              ),
-              const Gap(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      category['title'] as String,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+          child: InkWell(
+            onTap: () {},
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: (category['color'] as Color).withValues(
+                        alpha: 0.1,
                       ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const Gap(8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 6,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          category['color'] as Color,
+                    child: Icon(
+                      category['icon'] as IconData,
+                      color: category['color'] as Color,
+                    ),
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category['title'] as String,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                        const Gap(8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 6,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              category['color'] as Color,
+                            ),
+                          ),
+                        ),
+                        const Gap(4),
+                        Text(
+                          '$completed / $total completed',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
-                    const Gap(4),
-                    Text(
-                      '$completed / $total completed',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  const Icon(Icons.chevron_right),
+                ],
               ),
-              const Icon(Icons.chevron_right),
-            ],
+            ),
           ),
         ),
       ),

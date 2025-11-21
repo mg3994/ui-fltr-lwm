@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'dart:ui';
 
 class SavedItemsScreen extends HookWidget {
   const SavedItemsScreen({super.key});
@@ -97,32 +98,63 @@ class SavedItemsScreen extends HookWidget {
       itemCount: mentors.length,
       itemBuilder: (context, index) {
         final mentor = mentors[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(mentor['avatar'] as String),
-            ),
-            title: Text(mentor['name'] as String),
-            subtitle: Text(mentor['title'] as String),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.star, size: 14, color: Colors.amber),
-                    const Gap(4),
-                    Text('${mentor['rating']}'),
-                  ],
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: Duration(milliseconds: 300 + index * 100),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 20 * (1 - value)),
+                child: child,
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
                 ),
-                const Gap(4),
-                Text(
-                  '\$${mentor['rate']}/hr',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(mentor['avatar'] as String),
+                  ),
+                  title: Text(mentor['name'] as String),
+                  subtitle: Text(mentor['title'] as String),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star, size: 14, color: Colors.amber),
+                          const Gap(4),
+                          Text('${mentor['rating']}'),
+                        ],
+                      ),
+                      const Gap(4),
+                      Text(
+                        '\$${mentor['rate']}/hr',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -136,25 +168,58 @@ class SavedItemsScreen extends HookWidget {
       itemCount: resources.length,
       itemBuilder: (context, index) {
         final resource = resources[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: (resource['color'] as Color).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: Duration(milliseconds: 300 + index * 100),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 20 * (1 - value)),
+                child: child,
               ),
-              child: Icon(
-                resource['icon'] as IconData,
-                color: resource['color'] as Color,
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: (resource['color'] as Color).withValues(
+                        alpha: 0.1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      resource['icon'] as IconData,
+                      color: resource['color'] as Color,
+                    ),
+                  ),
+                  title: Text(resource['title'] as String),
+                  subtitle: Text('${resource['type']} • ${resource['author']}'),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.bookmark),
+                    onPressed: () {},
+                  ),
+                ),
               ),
-            ),
-            title: Text(resource['title'] as String),
-            subtitle: Text('${resource['type']} • ${resource['author']}'),
-            trailing: IconButton(
-              icon: const Icon(Icons.bookmark),
-              onPressed: () {},
             ),
           ),
         );
@@ -168,38 +233,69 @@ class SavedItemsScreen extends HookWidget {
       itemCount: posts.length,
       itemBuilder: (context, index) {
         final post = posts[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post['title'] as String,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: Duration(milliseconds: 300 + index * 100),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 20 * (1 - value)),
+                child: child,
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surface.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                   ),
                 ),
-                const Gap(8),
-                Text(
-                  'by ${post['author']}',
-                  style: const TextStyle(fontSize: 12),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post['title'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Gap(8),
+                      Text(
+                        'by ${post['author']}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      const Gap(12),
+                      Row(
+                        children: [
+                          const Icon(Icons.arrow_upward, size: 16),
+                          const Gap(4),
+                          Text('${post['upvotes']} upvotes'),
+                          const Gap(16),
+                          const Icon(Icons.chat_bubble_outline, size: 16),
+                          const Gap(4),
+                          Text('${post['answers']} answers'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const Gap(12),
-                Row(
-                  children: [
-                    const Icon(Icons.arrow_upward, size: 16),
-                    const Gap(4),
-                    Text('${post['upvotes']} upvotes'),
-                    const Gap(16),
-                    const Icon(Icons.chat_bubble_outline, size: 16),
-                    const Gap(4),
-                    Text('${post['answers']} answers'),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
         );
@@ -207,4 +303,3 @@ class SavedItemsScreen extends HookWidget {
     );
   }
 }
-
